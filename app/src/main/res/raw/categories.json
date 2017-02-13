@@ -1,0 +1,10 @@
+[{"id":1, "image":"categories_number", "name":"NUMBERS"},
+ {"id":2, "image":"categories_fruits", "name":"FRUITS"},
+ {"id":3, "image":"categories_colours", "name":"COLOURS"},
+ {"id":4, "image":"categories_animals", "name":"ANIMALS"},
+ {"id":5, "image":"categories_birds", "name":"BIRDS"},
+ {"id":6, "image":"categories_wateranimals", "name":"WATERANIMALS"},
+ {"id":7, "image":"categories_bugs", "name":"BUGS"},
+ {"id":8, "image":"categories_clothing", "name":"CLOTHING"},
+ {"id":9, "image":"categories_appliances", "name":"APPLIANCES"},
+ {"id":10, "image":"categories_transportation", "name":"TRANSPORTATION"}]
