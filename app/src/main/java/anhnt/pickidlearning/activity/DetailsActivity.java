@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.DetailPagerAdapter;
@@ -31,12 +32,16 @@ public class DetailsActivity extends AppCompatActivity {
     private List<Item> allItems;
     private Button mBtnChose1;
     private Button mBtnChose2;
+    private Bundle bundle;
+    private int categoryId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         init();
+        bundle = getIntent().getExtras();
+        categoryId = bundle.getInt(FinalValue.SENDDATA);
         setViewPager();
 
         int positionItem = mViewPager.getCurrentItem();
@@ -90,7 +95,7 @@ public class DetailsActivity extends AppCompatActivity {
     private void getItems() throws IOException, JSONException {
         allItems = ReadJson.readItem(DetailsActivity.this);
         for (int i = 0; i < allItems.size(); i++) {
-            if (allItems.get(i).getCategoryId() == 4) {
+            if (allItems.get(i).getCategoryId() == categoryId) {
                 items.add(allItems.get(i));
             }
         }

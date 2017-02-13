@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.DetailPagerAdapter;
@@ -63,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void setOnItemClick(int position) {
-        startActivity(new Intent(MainActivity.this,DetailsActivity.class));
+        Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(FinalValue.SENDDATA,categories.get(position).getId());
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
