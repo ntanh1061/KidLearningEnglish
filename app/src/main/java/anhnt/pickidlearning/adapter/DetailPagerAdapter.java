@@ -48,11 +48,9 @@ public class DetailPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mInflater.inflate(R.layout.view_pager_item, container, false);
         ImageView img = (ImageView) view.findViewById(R.id.img_detail);
-//        Drawable drawable = mContext.getResources().getDrawable(mContext.getResources().getIdentifier("animal_chimpanzee", "drawable", mContext.getPackageName()));
         Drawable drawable = mContext.getResources().getDrawable(mContext.getResources().
                 getIdentifier(mPaths.get(position).getImage().toString(), "drawable", mContext.getPackageName()));
         img.setImageDrawable(drawable);
-//        Log.d("Test", "instantiateItem: " + mPaths.get(position).getImage().toString());
         container.addView(view);
         return view;
     }

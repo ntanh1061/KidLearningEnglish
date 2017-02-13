@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void setOnItemClick(int position) {
+        actionIntent(position);
+    }
+
+    private void actionIntent(int position){
         Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(FinalValue.SENDDATA,categories.get(position).getId());
