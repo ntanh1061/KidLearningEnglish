@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -67,10 +68,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         actionIntent(position);
     }
 
-    private void actionIntent(int position){
-        Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+    private void actionIntent(int position) {
+        Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(FinalValue.SENDDATA,categories.get(position).getId());
+        bundle.putInt(FinalValue.SENDDATA, categories.get(position).getId());
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -8,4 +8,5 @@
     <color name="button_color_normal">#ffffff</color>
     <color name="button_color_right">#ff0000</color>
     <color name="button_color_wrong">#8e2564</color>
+    <color name="background_color_image">#eb742db3</color>
 </resources>

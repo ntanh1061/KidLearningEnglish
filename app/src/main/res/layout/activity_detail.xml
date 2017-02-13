@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:orientation="vertical">
 
     <include layout="@layout/toolbar_layout" />
 
@@ -15,40 +15,52 @@
             android:id="@+id/progress_bar"
             style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btn_chose_1"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btn_chose_2"
-            android:textAllCaps="false"
-            android:layout_marginBottom="@dimen/default_margin_top"
-            android:layout_marginLeft="@dimen/default_margin_top"
-            android:layout_marginRight="@dimen/default_margin_top"/>
-
-        <Button
-            android:id="@+id/btn_chose_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/height_detail_linear_bottom"
             android:layout_alignParentBottom="true"
-            android:textAllCaps="false"
-            android:layout_marginLeft="@dimen/default_margin_top"
-            android:layout_marginRight="@dimen/default_margin_top"
-            android:layout_marginBottom="@dimen/default_margin_top"/>
+            android:background="@color/button_color_normal"
+            android:id="@+id/relative_container"
+            >
+
+            <ImageView
+                android:id="@+id/img_micro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/default_margin"
+                android:src="@mipmap/ic_micro" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/background_color_image"
+                android:textSize="@dimen/text_name_size" />
+
+            <ImageView
+                android:id="@+id/img_speaker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/default_margin"
+                android:src="@mipmap/ic_speaker" />
+        </RelativeLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/progress_bar"></android.support.v4.view.ViewPager>
-
+            android:layout_below="@+id/progress_bar"
+            android:layout_above="@+id/relative_container"
+            ></android.support.v4.view.ViewPager>
     </RelativeLayout>
 
 </LinearLayout>

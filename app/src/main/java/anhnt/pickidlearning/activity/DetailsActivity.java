@@ -1,18 +1,15 @@
 package anhnt.pickidlearning.activity;
 
-import android.content.res.ColorStateList;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
@@ -39,14 +35,14 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private DetailPagerAdapter mPagerAdapter;
     private List<Item> items;
     private List<Item> allItems;
-    private Button mBtnChose1;
-    private Button mBtnChose2;
+    private TextView mTvName;
+    private ImageView mImgMicro;
+    private ImageView mImgSpeaker;
     private Bundle bundle;
     private int categoryId;
     private int positionItem;
-    private int positionRandom;
-    private int random;
     private TextToSpeech mTextToSpeech;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +52,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         getCategoryId();
         setViewPager();
         setChoiceText();
+        setupTextToSpeech();
+        mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
         mProgressBar.setMax(items.size());
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -68,6 +66,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             public void onPageSelected(int position) {
                 setChoiceText();
                 mProgressBar.setProgress(position);
+                mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
             }
 
             @Override
@@ -75,21 +74,15 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         });
+
+        mImgMicro.setOnClickListener(DetailsActivity.this);
+        mImgSpeaker.setOnClickListener(DetailsActivity.this);
     }
 
     private void setChoiceText() {
         positionItem = mViewPager.getCurrentItem();
-        positionRandom = getRandom(0, items.size());
-        random = getRandom(1, 2);
-        mBtnChose1.setBackgroundColor(getResources().getColor(R.color.button_color_normal));
-        mBtnChose2.setBackgroundColor(getResources().getColor(R.color.button_color_normal));
-        if (random == 1) {
-            mBtnChose1.setText(items.get(positionItem).getName().toString().toLowerCase());
-            mBtnChose2.setText(items.get(positionRandom).getName().toString().toLowerCase());
-        } else {
-            mBtnChose2.setText(items.get(positionItem).getName().toString().toLowerCase());
-            mBtnChose1.setText(items.get(positionRandom).getName().toString().toLowerCase());
-        }
+        String currentWord = items.get(positionItem).getName().toString().toLowerCase();
+        mTvName.setText(currentWord);
     }
 
     private int getRandom(int min, int max) {
@@ -97,23 +90,22 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void init() {
+        items = new ArrayList<>();
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mBtnChose1 = (Button) findViewById(R.id.btn_chose_1);
-        mBtnChose2 = (Button) findViewById(R.id.btn_chose_2);
-        mBtnChose1.setOnClickListener(this);
-        mBtnChose2.setOnClickListener(this);
+        mTvName = (TextView) findViewById(R.id.tvName);
+        mImgMicro = (ImageView) findViewById(R.id.img_micro);
+        mImgSpeaker = (ImageView) findViewById(R.id.img_speaker);
+        mHandler = new Handler();
+    }
+
+    private void setupTextToSpeech() {
         mTextToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    mTextToSpeech.setLanguage(Locale.UK);
-                }
+                    mTextToSpeech.setLanguage(Locale.US);
             }
         });
-        items = new ArrayList<>();
-
-
     }
 
     private void getItems() throws IOException, JSONException {
@@ -144,37 +136,32 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        String currentWord1 = mBtnChose1.getText().toString().toUpperCase();
-        String currentWord2 = mBtnChose2.getText().toString().toUpperCase();
+        positionItem = mViewPager.getCurrentItem();
         switch (v.getId()) {
-            case R.id.btn_chose_1:
-                if (currentWord1.equals(items.get(positionItem).getName().toString())) {
-                    mBtnChose1.setBackgroundColor(getResources().getColor(R.color.button_color_right));
-                    mTextToSpeech.speak(currentWord1, TextToSpeech.QUEUE_FLUSH, null);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mViewPager.setCurrentItem(positionItem + 1);
+            case R.id.img_micro:
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = mViewPager.getCurrentItem();
+                        if (position<items.size()){
+                            positionItem++;
+                            mViewPager.setCurrentItem(positionItem);
+                            mHandler.postDelayed(this,2000);
+                        } else {
+                            mHandler.removeCallbacks(null);
                         }
-                    }, 1000);
-                } else {
-                    mBtnChose1.setBackgroundColor(getResources().getColor(R.color.button_color_wrong));
-                }
+                    }
+                },1000);
                 break;
-            case R.id.btn_chose_2:
-                if (currentWord2.equals(items.get(positionItem).getName().toString())) {
-                    mBtnChose2.setBackgroundColor(getResources().getColor(R.color.button_color_right));
-                    mTextToSpeech.speak(currentWord2, TextToSpeech.QUEUE_FLUSH, null);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mViewPager.setCurrentItem(positionItem + 1);
-                        }
-                    }, 1000);
-                } else {
-                    mBtnChose2.setBackgroundColor(getResources().getColor(R.color.button_color_wrong));
-                }
+            case R.id.img_speaker:
+                mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
                 break;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
     }
 }
