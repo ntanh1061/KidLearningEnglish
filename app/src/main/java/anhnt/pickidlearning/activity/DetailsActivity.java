@@ -1,16 +1,21 @@
 package anhnt.pickidlearning.activity;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -33,16 +38,20 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private ViewPager mViewPager;
     private ProgressBar mProgressBar;
     private DetailPagerAdapter mPagerAdapter;
-    private List<Item> items;
-    private List<Item> allItems;
+    private List<Item> mItems;
+    private List<Item> mAllItems;
     private TextView mTvName;
-    private ImageView mImgMicro;
+    private ImageView mImgPlayPause;
     private ImageView mImgSpeaker;
-    private Bundle bundle;
-    private int categoryId;
-    private int positionItem;
+    private Bundle mBundle;
+    private int mCategoryId;
+    private int mPositionItem;
     private TextToSpeech mTextToSpeech;
     private Handler mHandler;
+    private Boolean mCheckPlay = false;
+    private Dialog mDialog;
+    private Toolbar mToolbar;
+    private String mCategoryName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,11 +59,11 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_detail);
         init();
         getCategoryId();
+        setupToolbar();
         setViewPager();
         setChoiceText();
-        setupTextToSpeech();
-        mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
-        mProgressBar.setMax(items.size());
+        readText(mItems.get(mPositionItem).getName().toString().toLowerCase());
+        mProgressBar.setMax(mItems.size());
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -66,7 +75,11 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             public void onPageSelected(int position) {
                 setChoiceText();
                 mProgressBar.setProgress(position);
-                mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                mTextToSpeech.speak(mItems.get(mPositionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                if (position == (mItems.size() - 1)) {
+                    mProgressBar.setProgress(mPositionItem + 1);
+                    showDialog();
+                }
             }
 
             @Override
@@ -75,13 +88,13 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        mImgMicro.setOnClickListener(DetailsActivity.this);
+        mImgPlayPause.setOnClickListener(DetailsActivity.this);
         mImgSpeaker.setOnClickListener(DetailsActivity.this);
     }
 
     private void setChoiceText() {
-        positionItem = mViewPager.getCurrentItem();
-        String currentWord = items.get(positionItem).getName().toString().toLowerCase();
+        mPositionItem = mViewPager.getCurrentItem();
+        String currentWord = mItems.get(mPositionItem).getName().toString().toLowerCase();
         mTvName.setText(currentWord);
     }
 
@@ -90,29 +103,39 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void init() {
-        items = new ArrayList<>();
+        mItems = new ArrayList<>();
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mTvName = (TextView) findViewById(R.id.tvName);
-        mImgMicro = (ImageView) findViewById(R.id.img_micro);
+        mImgPlayPause = (ImageView) findViewById(R.id.img_play_pause);
         mImgSpeaker = (ImageView) findViewById(R.id.img_speaker);
         mHandler = new Handler();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Vocabulary");
+        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setSubtitle(mCategoryName);
+        mToolbar.setSubtitleTextColor(Color.WHITE);
     }
 
     private void setupTextToSpeech() {
         mTextToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                    mTextToSpeech.setLanguage(Locale.US);
+                mTextToSpeech.setLanguage(Locale.US);
             }
         });
     }
 
     private void getItems() throws IOException, JSONException {
-        allItems = ReadJson.readItem(DetailsActivity.this);
-        for (int i = 0; i < allItems.size(); i++) {
-            if (allItems.get(i).getCategoryId() == categoryId) {
-                items.add(allItems.get(i));
+        mAllItems = ReadJson.readItem(DetailsActivity.this);
+        for (int i = 0; i < mAllItems.size(); i++) {
+            if (mAllItems.get(i).getCategoryId() == mCategoryId) {
+                mItems.add(mAllItems.get(i));
             }
         }
     }
@@ -125,43 +148,89 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mPagerAdapter = new DetailPagerAdapter(this, items);
+        mPagerAdapter = new DetailPagerAdapter(this, mItems);
         mViewPager.setAdapter(mPagerAdapter);
     }
 
     private void getCategoryId() {
-        bundle = getIntent().getExtras();
-        categoryId = bundle.getInt(FinalValue.SENDDATA);
+        mBundle = getIntent().getExtras();
+        mCategoryId = mBundle.getInt(FinalValue.SENDDATA);
+        mCategoryName = mBundle.getString(FinalValue.SEND_CATEGORY_NAME);
     }
 
     @Override
     public void onClick(View v) {
-        positionItem = mViewPager.getCurrentItem();
+        mPositionItem = mViewPager.getCurrentItem();
         switch (v.getId()) {
-            case R.id.img_micro:
+            case R.id.img_play_pause:
+                if (mCheckPlay) {
+                    mImgPlayPause.setImageResource(R.mipmap.ic_play);
+                    mCheckPlay = false;
+                } else {
+                    mImgPlayPause.setImageResource(R.mipmap.ic_pause);
+                    mCheckPlay = true;
+                }
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         int position = mViewPager.getCurrentItem();
-                        if (position<items.size()){
-                            positionItem++;
-                            mViewPager.setCurrentItem(positionItem);
-                            mHandler.postDelayed(this,2000);
+                        if (position < mItems.size() && mCheckPlay) {
+                            mPositionItem++;
+                            mViewPager.setCurrentItem(mPositionItem);
+                            mHandler.postDelayed(this, 2000);
                         } else {
                             mHandler.removeCallbacks(null);
                         }
                     }
-                },1000);
+                }, 1500);
                 break;
             case R.id.img_speaker:
-                mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                readText(mItems.get(mPositionItem).getName().toString().toLowerCase());
+                break;
+            case R.id.img_home:
+                finish();
+                break;
+            case R.id.img_replay:
+                mDialog.dismiss();
+                mViewPager.setCurrentItem(0);
+                break;
+            case R.id.img_next:
+                if (mCategoryId < 9) {
+                    Intent intent = new Intent(DetailsActivity.this, DetailsActivity.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putInt(FinalValue.SENDDATA, mCategoryId + 1);
+                    intent.putExtras(bundle1);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    finish();
+                }
                 break;
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mTextToSpeech.speak(items.get(positionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+    private void readText(final String text) {
+        setupTextToSpeech();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        }, 500);
+    }
+
+    private void showDialog() {
+        mDialog = new Dialog(this);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setCancelable(false);
+        mDialog.setContentView(R.layout.dialog_finish);
+        mDialog.show();
+
+        ImageView imgHome = (ImageView) mDialog.findViewById(R.id.img_home);
+        ImageView imgReplay = (ImageView) mDialog.findViewById(R.id.img_replay);
+        ImageView imgNext = (ImageView) mDialog.findViewById(R.id.img_next);
+        imgNext.setOnClickListener(this);
+        imgReplay.setOnClickListener(this);
+        imgHome.setOnClickListener(this);
     }
 }

@@ -2,23 +2,19 @@ package anhnt.pickidlearning.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.os.AsyncTask;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
+import java.util.Locale;
 
 import anhnt.pickidlearning.R;
+import anhnt.pickidlearning.activity.DetailsActivity;
 import anhnt.pickidlearning.models.Item;
 
 /**
@@ -27,19 +23,19 @@ import anhnt.pickidlearning.models.Item;
 
 public class DetailPagerAdapter extends PagerAdapter {
 
-    private List<Item> mPaths;
+    private List<Item> mItems;
     private Context mContext;
     private LayoutInflater mInflater;
 
-    public DetailPagerAdapter(Context mContext, List<Item> mPaths) {
-        this.mPaths = mPaths;
+    public DetailPagerAdapter(Context mContext, List<Item> items) {
+        this.mItems = items;
         this.mContext = mContext;
         mInflater = LayoutInflater.from(mContext);
     }
 
     @Override
     public int getCount() {
-        return mPaths.size();
+        return mItems.size();
     }
 
     @Override
@@ -52,11 +48,9 @@ public class DetailPagerAdapter extends PagerAdapter {
         View view = mInflater.inflate(R.layout.view_pager_item, container, false);
         ImageView img = (ImageView) view.findViewById(R.id.img_detail);
         Drawable drawable = mContext.getResources().getDrawable(mContext.getResources().
-                getIdentifier(mPaths.get(position).getImage().toString(), "drawable", mContext.getPackageName()));
+                getIdentifier(mItems.get(position).getImage().toString(), "drawable", mContext.getPackageName()));
         img.setImageDrawable(drawable);
         container.addView(view);
-
-
         return view;
     }
 

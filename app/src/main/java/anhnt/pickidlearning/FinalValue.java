@@ -6,4 +6,5 @@ package anhnt.pickidlearning;
 
 public class FinalValue {
     public static final String SENDDATA ="data";
+    public static final String SEND_CATEGORY_NAME = "category";
 }

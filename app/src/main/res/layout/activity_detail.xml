@@ -26,14 +26,14 @@
             >
 
             <ImageView
-                android:id="@+id/img_micro"
+                android:id="@+id/img_play_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/default_margin"
-                android:src="@mipmap/ic_micro" />
+                android:src="@mipmap/ic_play" />
 
             <TextView
                 android:id="@+id/tvName"
@@ -57,9 +57,10 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/progress_bar"
             android:layout_above="@+id/relative_container"
+            android:layout_marginBottom="@dimen/default_margin_top"
             ></android.support.v4.view.ViewPager>
     </RelativeLayout>
 

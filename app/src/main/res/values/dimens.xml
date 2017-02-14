@@ -7,4 +7,5 @@
     <dimen name="default_padding">5dp</dimen>
     <dimen name="height_detail_linear_bottom">80dp</dimen>
     <dimen name="text_name_size">20dp</dimen>
+    <dimen name="image_finish_margin_top">50dp</dimen>
 </resources>
