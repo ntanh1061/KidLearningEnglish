@@ -2,8 +2,6 @@ package anhnt.pickidlearning.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.List;
-import java.util.Locale;
 
 import anhnt.pickidlearning.R;
-import anhnt.pickidlearning.activity.DetailsActivity;
 import anhnt.pickidlearning.models.Item;
 
 /**

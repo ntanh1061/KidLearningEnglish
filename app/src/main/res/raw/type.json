@@ -1,0 +1,6 @@
+[{"id":0, "image":"vocabulary",  "name":"Vocabulary"},
+ {"id":1, "image":"listen_write",  "name":"Listen & Write"},
+ {"id":2, "image":"choose_word",  "name":"Chose Word"},
+ {"id":3, "image":"listen_choose",  "name":"Listen & Choose"},
+ {"id":4, "image":"match_word",  "name":"Match Word"},
+ {"id":5, "image":"write_word",  "name":"Write Word"}]

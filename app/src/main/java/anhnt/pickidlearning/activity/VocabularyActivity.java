@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -34,7 +33,7 @@ import anhnt.pickidlearning.models.Item;
  * Created by Administrator on 2/13/2017.
  */
 
-public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class VocabularyActivity extends AppCompatActivity implements View.OnClickListener {
     private ViewPager mViewPager;
     private ProgressBar mProgressBar;
     private DetailPagerAdapter mPagerAdapter;
@@ -88,8 +87,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        mImgPlayPause.setOnClickListener(DetailsActivity.this);
-        mImgSpeaker.setOnClickListener(DetailsActivity.this);
+        mImgPlayPause.setOnClickListener(VocabularyActivity.this);
+        mImgSpeaker.setOnClickListener(VocabularyActivity.this);
     }
 
     private void setChoiceText() {
@@ -117,7 +116,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Vocabulary");
-        mToolbar.setTitleTextColor(Color.WHITE);
+//        mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setSubtitle(mCategoryName);
         mToolbar.setSubtitleTextColor(Color.WHITE);
     }
@@ -132,7 +131,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getItems() throws IOException, JSONException {
-        mAllItems = ReadJson.readItem(DetailsActivity.this);
+        mAllItems = ReadJson.readItem(VocabularyActivity.this);
         for (int i = 0; i < mAllItems.size(); i++) {
             if (mAllItems.get(i).getCategoryId() == mCategoryId) {
                 mItems.add(mAllItems.get(i));
@@ -155,7 +154,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private void getCategoryId() {
         mBundle = getIntent().getExtras();
         mCategoryId = mBundle.getInt(FinalValue.SENDDATA);
-        mCategoryName = mBundle.getString(FinalValue.SEND_CATEGORY_NAME);
+        mCategoryName = mBundle.getString(FinalValue.SEND_CATEGORY_NAME).toLowerCase();
     }
 
     @Override
@@ -196,7 +195,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.img_next:
                 if (mCategoryId < 9) {
-                    Intent intent = new Intent(DetailsActivity.this, DetailsActivity.class);
+                    Intent intent = new Intent(VocabularyActivity.this, VocabularyActivity.class);
                     Bundle bundle1 = new Bundle();
                     bundle1.putInt(FinalValue.SENDDATA, mCategoryId + 1);
                     intent.putExtras(bundle1);
@@ -232,5 +231,11 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         imgNext.setOnClickListener(this);
         imgReplay.setOnClickListener(this);
         imgHome.setOnClickListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

@@ -18,12 +18,11 @@
             android:layout_height="wrap_content" />
 
         <RelativeLayout
+            android:id="@+id/relative_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_detail_linear_bottom"
             android:layout_alignParentBottom="true"
-            android:background="@color/button_color_normal"
-            android:id="@+id/relative_container"
-            >
+            android:background="@color/background_color_image">
 
             <ImageView
                 android:id="@+id/img_play_pause"
@@ -40,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textColor="@color/background_color_image"
+                android:textColor="@color/colorToolbar"
                 android:textSize="@dimen/text_name_size" />
 
             <ImageView
@@ -58,10 +57,9 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/progress_bar"
             android:layout_above="@+id/relative_container"
-            android:layout_marginBottom="@dimen/default_margin_top"
-            ></android.support.v4.view.ViewPager>
+            android:layout_below="@+id/progress_bar"
+            android:layout_marginBottom="@dimen/default_margin_top"></android.support.v4.view.ViewPager>
     </RelativeLayout>
 
 </LinearLayout>

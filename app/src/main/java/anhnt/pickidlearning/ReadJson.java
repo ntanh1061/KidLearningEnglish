@@ -54,6 +54,20 @@ public class ReadJson {
         return items;
     }
 
+    public static List<Category> getType(Context context) throws IOException, JSONException {
+        List<Category> types = new ArrayList<>();
+        String text = readText(context, R.raw.type);
+        JSONArray jsonArray = new JSONArray(text);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            int id = jsonObject.getInt("id");
+            String name = jsonObject.getString("name");
+            String image = jsonObject.getString("image");
+            types.add(new Category(id, image, name));
+        }
+        return types;
+    }
+
     public static String readText(Context context, int resId) throws IOException {
         InputStream is = context.getResources().openRawResource(resId);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
