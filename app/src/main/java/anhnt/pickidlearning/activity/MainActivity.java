@@ -2,10 +2,20 @@ package anhnt.pickidlearning.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import org.json.JSONException;
 
@@ -17,68 +27,101 @@ import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.RecyclerViewAdapter;
+import anhnt.pickidlearning.fragment.PracticeFragment;
+import anhnt.pickidlearning.fragment.VocabularyFragment;
 import anhnt.pickidlearning.models.Category;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.IOnItemClickListener {
-    private RecyclerView mRecyclerView;
-    private RecyclerViewAdapter mAdapter;
-    private List<Category> categories;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private Bundle bundle;
-    private int typeID;
-    private Intent intent;
+public class MainActivity extends AppCompatActivity {
+    private TabLayout mTabLayout;
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        try {
-            setmRecyclerView();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        setupToobar();
+        setupTabLayout();
     }
 
     private void init() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        categories = new ArrayList<>();
-        bundle = getIntent().getExtras();
-        typeID = bundle.getInt(FinalValue.SEND_TYPE_ID);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
-    private void setmRecyclerView() throws IOException, JSONException {
-        getCategories();
-        mAdapter = new RecyclerViewAdapter(this, categories);
-        mLayoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(MainActivity.this);
+    private void setupTabLayout() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fr_container, new VocabularyFragment())
+                .commit();
+
+        final TabLayout.Tab tabVocabulary = mTabLayout.newTab().setIcon(R.mipmap.ic_vocabulary_on).setText("Vocabulary");
+        TabLayout.Tab tabPractice = mTabLayout.newTab().setIcon(R.mipmap.ic_practice_off);
+        mTabLayout.addTab(tabVocabulary);
+        mTabLayout.addTab(tabPractice);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab == tabVocabulary) {
+                    tab.setIcon(R.mipmap.ic_vocabulary_on);
+                    tab.setText("Vocabulary");
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fr_container, new VocabularyFragment())
+                            .commit();
+                } else {
+                    tab.setIcon(R.mipmap.ic_practice_on);
+                    tab.setText("Practice");
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fr_container, new PracticeFragment())
+                            .commit();
+                }
+                ViewGroup vg = (ViewGroup) mTabLayout.getChildAt(0);
+                int delay = 100; //this is starting delay
+                ViewGroup vgTab = (ViewGroup) vg.getChildAt(tab.getPosition());
+                vgTab.setScaleX(0f);
+                vgTab.setScaleY(0f);
+                vgTab.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setStartDelay(delay)
+                        .start();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.setText("");
+                if (tab == tabVocabulary) {
+                    tab.setIcon(R.mipmap.ic_vocabulary_off);
+                } else {
+                    tab.setIcon(R.mipmap.ic_practice_off);
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
-    private void getCategories() throws IOException, JSONException {
-        categories.addAll(ReadJson.readCategory(MainActivity.this));
-
+    private void setupToobar() {
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setTitle("PicKidLearing");
+        mToolbar.setTitleMarginStart(30);
+        mToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.setDrawerListener(mToggle);
+        mToggle.syncState();
     }
-
     @Override
-    public void setOnItemClick(int position) {
-        actionIntent(position);
-    }
-
-    private void actionIntent(int position) {
-        switch (typeID) {
-            case 0:
-                intent = new Intent(MainActivity.this, VocabularyActivity.class);
-                break;
-
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
-        Bundle bundle = new Bundle();
-        bundle.putInt(FinalValue.SENDDATA, categories.get(position).getId());
-        bundle.putString(FinalValue.SEND_CATEGORY_NAME, categories.get(position).getName());
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 }

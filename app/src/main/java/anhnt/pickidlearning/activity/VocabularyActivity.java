@@ -9,7 +9,11 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -27,6 +31,7 @@ import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.DetailPagerAdapter;
+import anhnt.pickidlearning.adapter.RecyclerViewVocabularyAdapter;
 import anhnt.pickidlearning.models.Item;
 
 /**
@@ -39,9 +44,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private DetailPagerAdapter mPagerAdapter;
     private List<Item> mItems;
     private List<Item> mAllItems;
-    private TextView mTvName;
-    private ImageView mImgPlayPause;
-    private ImageView mImgSpeaker;
     private Bundle mBundle;
     private int mCategoryId;
     private int mPositionItem;
@@ -51,11 +53,13 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private Dialog mDialog;
     private Toolbar mToolbar;
     private String mCategoryName;
+    private RecyclerView recyclerView;
+    private RecyclerViewVocabularyAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_vocabulary);
         init();
         getCategoryId();
         setupToolbar();
@@ -87,14 +91,16 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        mImgPlayPause.setOnClickListener(VocabularyActivity.this);
-        mImgSpeaker.setOnClickListener(VocabularyActivity.this);
+        adapter = new RecyclerViewVocabularyAdapter(this, mItems);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
     }
 
     private void setChoiceText() {
         mPositionItem = mViewPager.getCurrentItem();
         String currentWord = mItems.get(mPositionItem).getName().toString().toLowerCase();
-        mTvName.setText(currentWord);
     }
 
     private int getRandom(int min, int max) {
@@ -106,17 +112,15 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mTvName = (TextView) findViewById(R.id.tvName);
-        mImgPlayPause = (ImageView) findViewById(R.id.img_play_pause);
-        mImgSpeaker = (ImageView) findViewById(R.id.img_speaker);
         mHandler = new Handler();
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     }
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Vocabulary");
-//        mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setSubtitle(mCategoryName);
         mToolbar.setSubtitleTextColor(Color.WHITE);
     }
@@ -161,31 +165,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         mPositionItem = mViewPager.getCurrentItem();
         switch (v.getId()) {
-            case R.id.img_play_pause:
-                if (mCheckPlay) {
-                    mImgPlayPause.setImageResource(R.mipmap.ic_play);
-                    mCheckPlay = false;
-                } else {
-                    mImgPlayPause.setImageResource(R.mipmap.ic_pause);
-                    mCheckPlay = true;
-                }
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        int position = mViewPager.getCurrentItem();
-                        if (position < mItems.size() && mCheckPlay) {
-                            mPositionItem++;
-                            mViewPager.setCurrentItem(mPositionItem);
-                            mHandler.postDelayed(this, 2000);
-                        } else {
-                            mHandler.removeCallbacks(null);
-                        }
-                    }
-                }, 1500);
-                break;
-            case R.id.img_speaker:
-                readText(mItems.get(mPositionItem).getName().toString().toLowerCase());
-                break;
             case R.id.img_home:
                 finish();
                 break;
@@ -237,5 +216,40 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_play:
+                if (mCheckPlay) {
+                    item.setIcon(R.mipmap.ic_play);
+                    mCheckPlay = false;
+                } else {
+                    item.setIcon(R.mipmap.ic_pause);
+                    mCheckPlay = true;
+                }
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = mViewPager.getCurrentItem();
+                        if (position < mItems.size() && mCheckPlay) {
+                            mPositionItem++;
+                            mViewPager.setCurrentItem(mPositionItem);
+                            mHandler.postDelayed(this, 2000);
+                        } else {
+                            mHandler.removeCallbacks(null);
+                        }
+                    }
+                }, 1500);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
