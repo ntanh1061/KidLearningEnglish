@@ -53,7 +53,6 @@ public class ReadJson {
         }
         return items;
     }
-
     public static List<Category> getType(Context context) throws IOException, JSONException {
         List<Category> types = new ArrayList<>();
         String text = readText(context, R.raw.type);

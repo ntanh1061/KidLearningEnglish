@@ -12,13 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import org.json.JSONException;
 
@@ -32,6 +33,7 @@ import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.DetailPagerAdapter;
 import anhnt.pickidlearning.adapter.RecyclerViewVocabularyAdapter;
+import anhnt.pickidlearning.models.Category;
 import anhnt.pickidlearning.models.Item;
 
 /**
@@ -54,7 +56,11 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private Toolbar mToolbar;
     private String mCategoryName;
     private RecyclerView recyclerView;
-    private RecyclerViewVocabularyAdapter adapter;
+    private RecyclerViewVocabularyAdapter mAdapter;
+    private LinearLayoutManager layoutManager;
+    private List<Category> categories;
+    private int position;
+    private int row = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,33 +80,42 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
             }
 
+            //// TODO: 3/2/2017
             @Override
             public void onPageSelected(int position) {
+                layoutManager.scrollToPositionWithOffset(position, 0);
+                mAdapter.notifyDataSetChanged();
                 setChoiceText();
                 mProgressBar.setProgress(position);
                 mTextToSpeech.speak(mItems.get(mPositionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                Log.d("Test", "onPageSelected: " + position + " " + (mItems.size() - 1));
                 if (position == (mItems.size() - 1)) {
                     mProgressBar.setProgress(mPositionItem + 1);
                     showDialog();
                 }
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
         });
-
-        adapter = new RecyclerViewVocabularyAdapter(this, mItems);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mAdapter = new RecyclerViewVocabularyAdapter(this, mItems);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClick(new RecyclerViewVocabularyAdapter.IOnClickListener() {
+            @Override
+            public void setOnItemClick(int position) {
+                mViewPager.setCurrentItem(position);
+                layoutManager.scrollToPositionWithOffset(position, 0);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
     private void setChoiceText() {
         mPositionItem = mViewPager.getCurrentItem();
-        String currentWord = mItems.get(mPositionItem).getName().toString().toLowerCase();
     }
 
     private int getRandom(int min, int max) {
@@ -109,6 +124,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
     private void init() {
         mItems = new ArrayList<>();
+        categories = new ArrayList<>();
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -121,7 +137,11 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Vocabulary");
         mToolbar.setTitleTextColor(Color.WHITE);
-        mToolbar.setSubtitle(mCategoryName);
+        setTitleToolbar(mCategoryName);
+    }
+
+    public void setTitleToolbar(String category) {
+        mToolbar.setSubtitle(category);
         mToolbar.setSubtitleTextColor(Color.WHITE);
     }
 
@@ -134,10 +154,10 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    private void getItems() throws IOException, JSONException {
+    private void getItems(int categoryId) throws IOException, JSONException {
         mAllItems = ReadJson.readItem(VocabularyActivity.this);
         for (int i = 0; i < mAllItems.size(); i++) {
-            if (mAllItems.get(i).getCategoryId() == mCategoryId) {
+            if (mAllItems.get(i).getCategoryId() == categoryId) {
                 mItems.add(mAllItems.get(i));
             }
         }
@@ -145,7 +165,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
     private void setViewPager() {
         try {
-            getItems();
+            getItems(mCategoryId);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -157,8 +177,17 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
     private void getCategoryId() {
         mBundle = getIntent().getExtras();
-        mCategoryId = mBundle.getInt(FinalValue.SENDDATA);
-        mCategoryName = mBundle.getString(FinalValue.SEND_CATEGORY_NAME).toLowerCase();
+        position = mBundle.getInt(FinalValue.SENDDATA);
+        try {
+            categories.addAll(ReadJson.readCategory(this));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mCategoryId = categories.get(position).getId();
+        mCategoryName = categories.get(position).getName();
+//        mCategoryName = mBundle.getString(FinalValue.SEND_CATEGORY_NAME).toLowerCase();
     }
 
     @Override
@@ -172,17 +201,41 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 mDialog.dismiss();
                 mViewPager.setCurrentItem(0);
                 break;
+
+            //// TODO: 3/2/2017
             case R.id.img_next:
+                mItems.clear();
                 if (mCategoryId < 9) {
-                    Intent intent = new Intent(VocabularyActivity.this, VocabularyActivity.class);
-                    Bundle bundle1 = new Bundle();
-                    bundle1.putInt(FinalValue.SENDDATA, mCategoryId + 1);
-                    intent.putExtras(bundle1);
-                    startActivity(intent);
-                    finish();
+                    mCategoryId++;
+                    position++;
+                    try {
+                        getItems(mCategoryId);
+                        mPagerAdapter = new DetailPagerAdapter(this, mItems);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else {
-                    finish();
+                    mCategoryId = 1;
+                    position = 0;
+                    try {
+                        getItems(mCategoryId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mPagerAdapter = new DetailPagerAdapter(this, mItems);
                 }
+                mCategoryName = categories.get(position).getName();
+                setTitleToolbar(mCategoryName);
+                recyclerView.getChildAt(2).setBackgroundColor(Color.BLUE);
+                mAdapter.notifyDataSetChanged();
+                mDialog.dismiss();
+                mViewPager.setAdapter(mPagerAdapter);
+                layoutManager.scrollToPositionWithOffset(0, 0);
+                mAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -251,5 +304,11 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 }

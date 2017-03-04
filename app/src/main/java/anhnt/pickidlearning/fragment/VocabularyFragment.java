@@ -58,8 +58,9 @@ public class VocabularyFragment extends Fragment {
             public void setOnItemClick(int position) {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(getContext(),VocabularyActivity.class);
-                bundle.putInt(FinalValue.SENDDATA, categories.get(position).getId());
-                bundle.putString(FinalValue.SEND_CATEGORY_NAME, categories.get(position).getName());
+                bundle.putInt(FinalValue.SENDDATA, position);
+//                bundle.putInt(FinalValue.SENDDATA, categories.get(position).getId());
+//                bundle.putString(FinalValue.SEND_CATEGORY_NAME, categories.get(position).getName());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
