@@ -3,8 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorToolbar">#943FC5</color>
-    <color name="background">#6defef00</color>
+    <color name="colorToolbar">#FFC107</color>
+    <color name="background">#FFD54F</color>
     <color name="button_color_normal">#ffffff</color>
     <color name="button_color_right">#ff0000</color>
     <color name="button_color_wrong">#8e2564</color>

@@ -1,7 +1,5 @@
 package anhnt.pickidlearning.activity;
 
-import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,17 +7,18 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.json.JSONException;
 
@@ -32,7 +31,6 @@ import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.DetailPagerAdapter;
-import anhnt.pickidlearning.adapter.RecyclerViewVocabularyAdapter;
 import anhnt.pickidlearning.models.Category;
 import anhnt.pickidlearning.models.Item;
 
@@ -52,15 +50,21 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private TextToSpeech mTextToSpeech;
     private Handler mHandler;
     private Boolean mCheckPlay = false;
-    private Dialog mDialog;
     private Toolbar mToolbar;
     private String mCategoryName;
-    private RecyclerView recyclerView;
-    private RecyclerViewVocabularyAdapter mAdapter;
-    private LinearLayoutManager layoutManager;
     private List<Category> categories;
     private int position;
-    private int row = 0;
+    private ImageView mImgSpeaker;
+    private ImageView mImgReturn;
+    private TextView mTvWord;
+    private String word;
+    private RelativeLayout mRelativeLayout;
+    private ImageView mImgHome;
+    private ImageView mImgNext;
+    private ImageView mImgReplay;
+    private Animation mAnimation;
+    private ImageView mImgNextPage;
+    private ImageView mImgPrevPage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +75,18 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         setupToolbar();
         setViewPager();
         setChoiceText();
-        readText(mItems.get(mPositionItem).getName().toString().toLowerCase());
+
+        word = mItems.get(mPositionItem).getName().toString();
+        readText(word);
         mProgressBar.setMax(mItems.size());
+        mTvWord.setText(word);
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showButtonNextPrev(mPositionItem);
+            }
+        }, 1500);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -80,35 +94,33 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
             }
 
-            //// TODO: 3/2/2017
             @Override
             public void onPageSelected(int position) {
-                layoutManager.scrollToPositionWithOffset(position, 0);
-                mAdapter.notifyDataSetChanged();
+                mPositionItem = position;
                 setChoiceText();
+                hideButtonNextPrev();
                 mProgressBar.setProgress(position);
-                mTextToSpeech.speak(mItems.get(mPositionItem).getName().toString().toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                word = mItems.get(mPositionItem).getName().toString();
+                mTvWord.setText(word);
+                mTextToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
                 Log.d("Test", "onPageSelected: " + position + " " + (mItems.size() - 1));
                 if (position == (mItems.size() - 1)) {
-                    mProgressBar.setProgress(mPositionItem + 1);
-                    showDialog();
+//                    mProgressBar.setProgress(mPositionItem + 1);
+                    mRelativeLayout.setVisibility(View.VISIBLE);
+                } else {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showButtonNextPrev(mPositionItem);
+                        }
+                    }, 1500);
                 }
+
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
 
-            }
-        });
-        mAdapter = new RecyclerViewVocabularyAdapter(this, mItems);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClick(new RecyclerViewVocabularyAdapter.IOnClickListener() {
-            @Override
-            public void setOnItemClick(int position) {
-                mViewPager.setCurrentItem(position);
-                layoutManager.scrollToPositionWithOffset(position, 0);
-                mAdapter.notifyDataSetChanged();
             }
         });
 
@@ -123,19 +135,37 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void init() {
+        mImgSpeaker = (ImageView) findViewById(R.id.img_speaker);
+        mImgReturn = (ImageView) findViewById(R.id.img_return);
+        mImgHome = (ImageView) findViewById(R.id.img_home);
+        mImgNext = (ImageView) findViewById(R.id.img_next);
+        mImgReplay = (ImageView) findViewById(R.id.img_replay);
+        mImgNextPage = (ImageView) findViewById(R.id.img_next_page);
+        mImgPrevPage = (ImageView) findViewById(R.id.img_prev_page);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.relative_finish);
+        mTvWord = (TextView) findViewById(R.id.tv_Word);
         mItems = new ArrayList<>();
         categories = new ArrayList<>();
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mHandler = new Handler();
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mImgSpeaker.setOnClickListener(this);
+        mImgReturn.setOnClickListener(this);
+        mImgHome.setOnClickListener(this);
+        mImgNext.setOnClickListener(this);
+        mImgReplay.setOnClickListener(this);
+        mImgNextPage.setOnClickListener(this);
+        mImgPrevPage.setOnClickListener(this);
+        mAnimation = AnimationUtils.loadAnimation(this, R.anim.action_finish);
+        mAnimation.setDuration(500);
     }
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Vocabulary");
+        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_action_back);
         mToolbar.setTitleTextColor(Color.WHITE);
         setTitleToolbar(mCategoryName);
     }
@@ -198,12 +228,25 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.img_replay:
-                mDialog.dismiss();
+                mRelativeLayout.setVisibility(View.GONE);
                 mViewPager.setCurrentItem(0);
                 break;
-
-            //// TODO: 3/2/2017
+            case R.id.img_speaker:
+                readText(word);
+                break;
+            case R.id.img_return:
+                changeViewPager(0);
+                break;
+            case R.id.img_next_page:
+                mPositionItem++;
+                changeViewPager(mPositionItem);
+                break;
+            case R.id.img_prev_page:
+                mPositionItem--;
+                changeViewPager(mPositionItem);
+                break;
             case R.id.img_next:
+                mProgressBar.setProgress(0);
                 mItems.clear();
                 if (mCategoryId < 9) {
                     mCategoryId++;
@@ -230,12 +273,8 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 }
                 mCategoryName = categories.get(position).getName();
                 setTitleToolbar(mCategoryName);
-                recyclerView.getChildAt(2).setBackgroundColor(Color.BLUE);
-                mAdapter.notifyDataSetChanged();
-                mDialog.dismiss();
                 mViewPager.setAdapter(mPagerAdapter);
-                layoutManager.scrollToPositionWithOffset(0, 0);
-                mAdapter.notifyDataSetChanged();
+                mRelativeLayout.setVisibility(View.GONE);
                 break;
         }
     }
@@ -250,20 +289,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         }, 500);
     }
 
-    private void showDialog() {
-        mDialog = new Dialog(this);
-        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialog.setCancelable(false);
-        mDialog.setContentView(R.layout.dialog_finish);
-        mDialog.show();
-
-        ImageView imgHome = (ImageView) mDialog.findViewById(R.id.img_home);
-        ImageView imgReplay = (ImageView) mDialog.findViewById(R.id.img_replay);
-        ImageView imgNext = (ImageView) mDialog.findViewById(R.id.img_next);
-        imgNext.setOnClickListener(this);
-        imgReplay.setOnClickListener(this);
-        imgHome.setOnClickListener(this);
-    }
 
     @Override
     public void onBackPressed() {
@@ -294,7 +319,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                         int position = mViewPager.getCurrentItem();
                         if (position < mItems.size() && mCheckPlay) {
                             mPositionItem++;
-                            mViewPager.setCurrentItem(mPositionItem);
+                            changeViewPager(mPositionItem);
                             mHandler.postDelayed(this, 2000);
                         } else {
                             mHandler.removeCallbacks(null);
@@ -310,5 +335,22 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     protected void onResume() {
         super.onResume();
 
+    }
+
+    private void showButtonNextPrev(int position) {
+        mImgNextPage.setVisibility(View.VISIBLE);
+        if (position != 0) {
+            mImgPrevPage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideButtonNextPrev() {
+        mImgNextPage.setVisibility(View.GONE);
+        mImgPrevPage.setVisibility(View.GONE);
+    }
+
+    private void changeViewPager(int position) {
+        mViewPager.setCurrentItem(position);
+        mPagerAdapter.notifyDataSetChanged();
     }
 }

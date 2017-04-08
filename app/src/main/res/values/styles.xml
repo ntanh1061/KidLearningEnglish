@@ -11,4 +11,11 @@
     <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>
+
+    <style name="CustomProgresBar" parent="Base.Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/g_pg_indicator</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:minWidth">20dp</item>
+    </style>
 </resources>
