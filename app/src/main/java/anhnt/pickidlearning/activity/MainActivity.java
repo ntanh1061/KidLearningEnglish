@@ -57,22 +57,22 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fr_container, new VocabularyFragment())
                 .commit();
 
-        final TabLayout.Tab tabVocabulary = mTabLayout.newTab().setIcon(R.mipmap.ic_vocabulary_on).setText("Vocabulary");
-        TabLayout.Tab tabPractice = mTabLayout.newTab().setIcon(R.mipmap.ic_practice_off);
+        final TabLayout.Tab tabVocabulary = mTabLayout.newTab().setText("Vocabulary");
+        TabLayout.Tab tabPractice = mTabLayout.newTab().setText("Practic");
         mTabLayout.addTab(tabVocabulary);
         mTabLayout.addTab(tabPractice);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab == tabVocabulary) {
-                    tab.setIcon(R.mipmap.ic_vocabulary_on);
-                    tab.setText("Vocabulary");
+//                    tab.setIcon(R.mipmap.ic_vocabulary_on);
+//                    tab.setText("Vocabulary");
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fr_container, new VocabularyFragment())
                             .commit();
                 } else {
-                    tab.setIcon(R.mipmap.ic_practice_on);
-                    tab.setText("Practice");
+//                    tab.setIcon(R.mipmap.ic_practice_on);
+//                    tab.setText("Practice");
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fr_container, new PracticeFragment())
                             .commit();
@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.setText("");
-                if (tab == tabVocabulary) {
-                    tab.setIcon(R.mipmap.ic_vocabulary_off);
-                } else {
-                    tab.setIcon(R.mipmap.ic_practice_off);
-                }
+//                tab.setText("");
+//                if (tab == tabVocabulary) {
+//                    tab.setIcon(R.mipmap.ic_vocabulary_off);
+//                } else {
+//                    tab.setIcon(R.mipmap.ic_practice_off);
+//                }
             }
 
             @Override
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawer.setDrawerListener(mToggle);
         mToggle.syncState();
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
