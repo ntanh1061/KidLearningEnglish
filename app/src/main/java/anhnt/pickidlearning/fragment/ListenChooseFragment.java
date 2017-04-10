@@ -3,6 +3,7 @@ package anhnt.pickidlearning.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,14 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Locale;
 
 import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
@@ -30,11 +30,14 @@ import anhnt.pickidlearning.myinterface.ISendItemID;
  * Created by AnhNT on 4/9/2017.
  */
 
-public class FindImageFragment extends Fragment implements View.OnClickListener {
+public class ListenChooseFragment extends Fragment implements View.OnClickListener {
     private ImageView mImgImage1;
     private ImageView mImgImage2;
     private ImageView mImgImage3;
     private ImageView mImgImage4;
+    private ImageView mImgPlaySound;
+    private ImageView mImgHelpPhon;
+    private TextView mTvWord;
     private View mViewRight1;
     private View mViewWrong1;
     private View mViewRight2;
@@ -45,7 +48,6 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
     private View mViewWrong4;
     private Bundle mBundle;
     private int[] arrItemId;
-    private TextView mTvWord;
     private List<Item> items;
     private int resID;
     private int mItemID1 = -1;
@@ -53,7 +55,9 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
     private int mItemID3 = -1;
     private int mItemID4 = -1;
     private Handler mHandler;
-    public ISendItemID iSendItemID;
+    private ISendItemID iSendItemID;
+    private TextToSpeech mTextToSpeech;
+    private String mWord;
     private int practicId;
 
     @Override
@@ -65,13 +69,19 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_find_image, container, false);
+        View view = inflater.inflate(R.layout.fragment_listen_choose, container, false);
         init(view);
         mBundle = getArguments();
         arrItemId = mBundle.getIntArray(ConstValue.ITEM_ID_ARRAY);
         practicId = mBundle.getInt(ConstValue.PRACTIC_ID);
-        mTvWord.setText(getItems(arrItemId[0] - 1).get(0).getName().toLowerCase().toString());
         mItemID1 = getRandom(0, 3, mItemID2, mItemID3, mItemID4);
+        mWord = getItems(arrItemId[0] - 1).get(0).getName().toLowerCase().toString();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                readText(mWord);
+            }
+        }, 500);
         mItemID2 = getRandom(0, 3, mItemID1, mItemID3, mItemID4);
         mItemID3 = getRandom(0, 3, mItemID1, mItemID2, mItemID4);
         mItemID4 = getRandom(0, 3, mItemID1, mItemID3, mItemID2);
@@ -112,6 +122,11 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
         mImgImage3.setOnClickListener(this);
         mImgImage4 = (ImageView) view.findViewById(R.id.img_image_view_4);
         mImgImage4.setOnClickListener(this);
+        mImgPlaySound = (ImageView) view.findViewById(R.id.img_play_sound);
+        mImgPlaySound.setOnClickListener(this);
+        mImgHelpPhon = (ImageView) view.findViewById(R.id.img_help_phon);
+        mImgHelpPhon.setOnClickListener(this);
+        mTvWord = (TextView) view.findViewById(R.id.tv_word);
         mViewRight1 = view.findViewById(R.id.view_right_1);
         mViewWrong1 = view.findViewById(R.id.view_wrong_1);
         mViewRight2 = view.findViewById(R.id.view_right_2);
@@ -120,7 +135,6 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
         mViewWrong3 = view.findViewById(R.id.view_wrong_3);
         mViewRight4 = view.findViewById(R.id.view_right_4);
         mViewWrong4 = view.findViewById(R.id.view_wrong_4);
-        mTvWord = (TextView) view.findViewById(R.id.tv_word);
         mHandler = new Handler();
     }
 
@@ -179,6 +193,13 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
                     mViewWrong4.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.img_play_sound:
+                readText(mWord);
+                break;
+            case R.id.img_help_phon:
+                mTvWord.setVisibility(View.VISIBLE);
+                mTvWord.setText(mWord);
+                break;
         }
     }
 
@@ -188,6 +209,25 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
             i = (int) (Math.random() * (max - min + 1) + min);
         }
         return i;
+    }
+
+    private void readText(final String text) {
+        setupTextToSpeech();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        }, 500);
+    }
+
+    private void setupTextToSpeech() {
+        mTextToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                mTextToSpeech.setLanguage(Locale.US);
+            }
+        });
     }
 
 }

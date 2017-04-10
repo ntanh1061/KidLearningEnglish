@@ -32,7 +32,8 @@
                     android:layout_height="match_parent"
                     android:padding="30dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/s_listening_skills" />
+                    android:src="@drawable/gi_lw"
+                    android:background="@color/background"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -63,7 +64,8 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:padding="30dp"
-                    android:src="@drawable/s_writing_skills" />
+                    android:src="@drawable/gi_ww"
+                    android:background="@color/background"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -84,39 +86,43 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <android.support.v7.widget.CardView
+        <View
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <!--<android.support.v7.widget.CardView-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="@dimen/default_margin"-->
+            <!--android:layout_weight="1">-->
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
 
-                <ImageView
-                    android:id="@+id/img_match_word"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="30dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/s_reading_skills"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/img_match_word"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:padding="30dp"-->
+                    <!--android:scaleType="fitXY"-->
+                    <!--android:src="@drawable/s_reading_skills"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_alignParentLeft="true"-->
+                    <!--android:layout_alignParentStart="true" />-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/img_match_word"
-                    android:background="@color/background_text"
-                    android:gravity="center"
-                    android:padding="@dimen/default_margin"
-                    android:text="Match Word"
-                    android:textColor="@color/colorToolbar"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignBottom="@+id/img_match_word"-->
+                    <!--android:background="@color/background_text"-->
+                    <!--android:gravity="center"-->
+                    <!--android:padding="@dimen/default_margin"-->
+                    <!--android:text="Match Word"-->
+                    <!--android:textColor="@color/colorToolbar"-->
+                    <!--android:textStyle="bold" />-->
+            <!--</RelativeLayout>-->
+        <!--</android.support.v7.widget.CardView>-->
 
         <android.support.v7.widget.CardView
             android:layout_width="0dp"
@@ -132,9 +138,11 @@
                     android:id="@+id/img_choose_word"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@color/background"
                     android:padding="30dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/s_choose_image" />
+                    android:src="@drawable/gi_cw" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -148,6 +156,10 @@
                     android:textStyle="bold" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -171,10 +183,11 @@
                     android:layout_height="match_parent"
                     android:padding="30dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/s_listen_choose"
+                    android:src="@drawable/gi_lc"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:background="@color/background"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -208,7 +221,8 @@
                     android:layout_alignParentTop="true"
                     android:padding="30dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/s_find_word" />
+                    android:src="@drawable/gi_fi"
+                    android:background="@color/background"/>
 
                 <TextView
                     android:layout_width="match_parent"

@@ -12,4 +12,6 @@
     <dimen name="tv_pronoun_margin_bottom">10dp</dimen>
     <dimen name="image_margin">10dp</dimen>
     <dimen name="image_margin_top_bottom">30dp</dimen>
-    <dimen name="indicator_tab_layout_height">5dp</dimen></resources>
+    <dimen name="indicator_tab_layout_height">5dp</dimen>
+    <dimen name="tab_bottom_height">70dp</dimen>
+</resources>

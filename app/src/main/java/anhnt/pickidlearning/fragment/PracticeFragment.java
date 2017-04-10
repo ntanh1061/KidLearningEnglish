@@ -1,8 +1,6 @@
 package anhnt.pickidlearning.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,8 +21,7 @@ import java.util.List;
 import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
-import anhnt.pickidlearning.activity.FindImageActivity;
-import anhnt.pickidlearning.adapter.RecyclerViewAdapter;
+import anhnt.pickidlearning.activity.PracticActivity;
 import anhnt.pickidlearning.adapter.RecyclerViewHorizontalAdapter;
 import anhnt.pickidlearning.models.Category;
 
@@ -87,8 +84,8 @@ public class PracticeFragment extends Fragment implements View.OnClickListener {
         mImgFindImage.setOnClickListener(this);
         mImgListenChoose = (ImageView) view.findViewById(R.id.img_listen_choose);
         mImgListenChoose.setOnClickListener(this);
-        mImgMatchWord = (ImageView) view.findViewById(R.id.img_match_word);
-        mImgMatchWord.setOnClickListener(this);
+//        mImgMatchWord = (ImageView) view.findViewById(R.id.img_match_word);
+//        mImgMatchWord.setOnClickListener(this);
         mImgListenWrite = (ImageView) view.findViewById(R.id.img_listen_write);
         mImgListenWrite.setOnClickListener(this);
         mImgWriteWord = (ImageView) view.findViewById(R.id.img_write_word);
@@ -107,18 +104,25 @@ public class PracticeFragment extends Fragment implements View.OnClickListener {
             case R.id.img_choose_word:
                 break;
             case R.id.img_find_image:
-                Intent intent = new Intent(getContext(), FindImageActivity.class);
-                intent.putExtra(ConstValue.CATEGORY_ID,mCategoryId);
-                startActivity(intent);
+                actionActivity("Find Image", 6);
                 break;
             case R.id.img_listen_choose:
+                actionActivity("Listen & Choose", 5);
                 break;
-            case R.id.img_match_word:
-                break;
+//            case R.id.img_match_word:
+//                break;
             case R.id.img_listen_write:
                 break;
             case R.id.img_write_word:
                 break;
         }
+    }
+
+    public void actionActivity(String praticName, int practicId) {
+        Intent intent = new Intent(getContext(), PracticActivity.class);
+        intent.putExtra(ConstValue.CATEGORY_ID, mCategoryId);
+        intent.putExtra(ConstValue.PRACTIC_NAME, praticName);
+        intent.putExtra(ConstValue.PRACTIC_ID, practicId);
+        startActivity(intent);
     }
 }

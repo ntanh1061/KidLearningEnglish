@@ -6,34 +6,34 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.fragment.FindImageFragment;
+import anhnt.pickidlearning.fragment.ListenChooseFragment;
 import anhnt.pickidlearning.models.Category;
 import anhnt.pickidlearning.models.Item;
+import anhnt.pickidlearning.myinterface.ISendItemID;
 
 /**
  * Created by AnhNT on 4/9/2017.
  */
 
-public class FindImageActivity extends AppCompatActivity implements FindImageFragment.ISendItemID {
+public class PracticActivity extends AppCompatActivity implements ISendItemID {
     private Toolbar mToolbar;
     private String mCategory;
     private int mCategoryID;
     private List<Category> categories;
     private List<Item> items;
     private Fragment mFindImageFragment;
+    private Fragment mListenChooseFragment;
     private Bundle mBundle;
     private int[] mArrItemId = new int[4];
     private int mItemID1;
@@ -44,28 +44,44 @@ public class FindImageActivity extends AppCompatActivity implements FindImageFra
     private int pos2 = 0;
     private int pos3 = 0;
     private int pos4 = 0;
+    private String mPracticName;
+    private int mPracticId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_image);
+        setContentView(R.layout.activity_practic);
         mCategoryID = getIntent().getIntExtra(ConstValue.CATEGORY_ID, 0);
+        mPracticId = getIntent().getIntExtra(ConstValue.PRACTIC_ID, 0);
+        mPracticName = getIntent().getStringExtra(ConstValue.PRACTIC_NAME);
         getCategories();
         mCategory = categories.get(mCategoryID - 1).getName();
         getItems();
         mItemID1 = items.get(0).getId();
-        setmArrItemId();
         setupToolbar();
-        setupFragment();
+
+        switch (mPracticId) {
+            case 5:
+                mListenChooseFragment = new ListenChooseFragment();
+                setmArrItemId();
+                setupFragment(mListenChooseFragment);
+                break;
+            case 6:
+                mFindImageFragment = new FindImageFragment();
+                setmArrItemId();
+                setupFragment(mFindImageFragment);
+                break;
+        }
+
     }
 
-    private void setupFragment() {
-        mFindImageFragment = new FindImageFragment();
+    private void setupFragment(Fragment fragment) {
         mBundle = new Bundle();
         mBundle.putIntArray(ConstValue.ITEM_ID_ARRAY, mArrItemId);
-        mFindImageFragment.setArguments(mBundle);
+        mBundle.putInt(ConstValue.PRACTIC_ID, mPracticId);
+        fragment.setArguments(mBundle);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fr_container, mFindImageFragment)
+                .replace(R.id.fr_container, fragment)
                 .commit();
     }
 
@@ -96,8 +112,7 @@ public class FindImageActivity extends AppCompatActivity implements FindImageFra
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_action_back);
-        getSupportActionBar().setTitle("Find Image");
-        mToolbar.setTitle("Find Image");
+        getSupportActionBar().setTitle(mPracticName);
         mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setSubtitle(mCategory);
         mToolbar.setSubtitleTextColor(Color.WHITE);
@@ -112,8 +127,7 @@ public class FindImageActivity extends AppCompatActivity implements FindImageFra
     }
 
     @Override
-    public void sendItemID(int itemID) {
-//        Toast.makeText(this, "Fuck Soft", Toast.LENGTH_SHORT).show();
+    public void sendItemID(int itemID, int practicId) {
         mItemID1 = itemID;
         if (mItemID1 == items.get(items.size() - 1).getId()) {
             finish();
@@ -121,7 +135,17 @@ public class FindImageActivity extends AppCompatActivity implements FindImageFra
         mItemID1++;
         pos1++;
         setmArrItemId();
-        setupFragment();
+        switch (practicId) {
+            case 5:
+                mListenChooseFragment = new ListenChooseFragment();
+                setupFragment(mListenChooseFragment);
+                break;
+            case 6:
+                mFindImageFragment = new FindImageFragment();
+                setupFragment(mFindImageFragment);
+                break;
+        }
+
     }
 
     public void setmArrItemId() {
@@ -139,13 +163,9 @@ public class FindImageActivity extends AppCompatActivity implements FindImageFra
         mArrItemId[3] = mItemID4;
     }
 
-//    private int getRandom(int min, int max) {
-//        int i = (int) (Math.random() * (max - min + 1) + min);
-////        for (int j = 0; j < arrExclude.length; i++) {
-////            while (i == arrExclude[j]) {
-////                i = (int) (Math.random() * (max - min + 1) + min);
-////            }
-////        }
-//        return i;
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
 }
