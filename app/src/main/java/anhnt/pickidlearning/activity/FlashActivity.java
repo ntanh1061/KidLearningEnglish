@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import anhnt.pickidlearning.FinalValue;
+import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 
 /**
@@ -27,7 +27,7 @@ public class FlashActivity extends AppCompatActivity {
             public void run() {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(FlashActivity.this, MainActivity.class);
-                bundle.putInt(FinalValue.SEND_TYPE_ID, 0);
+                bundle.putInt(ConstValue.SEND_TYPE_ID, 0);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();

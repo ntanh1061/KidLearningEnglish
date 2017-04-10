@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import anhnt.pickidlearning.FinalValue;
+import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.DetailPagerAdapter;
@@ -207,7 +207,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
     private void getCategoryId() {
         mBundle = getIntent().getExtras();
-        position = mBundle.getInt(FinalValue.SENDDATA);
+        position = mBundle.getInt(ConstValue.SENDDATA);
         try {
             categories.addAll(ReadJson.readCategory(this));
         } catch (IOException e) {
@@ -217,7 +217,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         }
         mCategoryId = categories.get(position).getId();
         mCategoryName = categories.get(position).getName();
-//        mCategoryName = mBundle.getString(FinalValue.SEND_CATEGORY_NAME).toLowerCase();
+//        mCategoryName = mBundle.getString(ConstValue.SEND_CATEGORY_NAME).toLowerCase();
     }
 
     @Override

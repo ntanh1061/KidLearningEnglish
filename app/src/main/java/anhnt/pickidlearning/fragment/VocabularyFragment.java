@@ -16,10 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import anhnt.pickidlearning.FinalValue;
+import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
-import anhnt.pickidlearning.activity.MainActivity;
 import anhnt.pickidlearning.activity.VocabularyActivity;
 import anhnt.pickidlearning.adapter.RecyclerViewAdapter;
 import anhnt.pickidlearning.models.Category;
@@ -58,9 +57,9 @@ public class VocabularyFragment extends Fragment {
             public void setOnItemClick(int position) {
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(getContext(),VocabularyActivity.class);
-                bundle.putInt(FinalValue.SENDDATA, position);
-//                bundle.putInt(FinalValue.SENDDATA, categories.get(position).getId());
-//                bundle.putString(FinalValue.SEND_CATEGORY_NAME, categories.get(position).getName());
+                bundle.putInt(ConstValue.SENDDATA, position);
+//                bundle.putInt(ConstValue.SENDDATA, categories.get(position).getId());
+//                bundle.putString(ConstValue.SEND_CATEGORY_NAME, categories.get(position).getName());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

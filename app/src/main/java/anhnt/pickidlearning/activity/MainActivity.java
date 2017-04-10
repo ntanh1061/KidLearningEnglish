@@ -1,7 +1,5 @@
 package anhnt.pickidlearning.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -9,27 +7,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import anhnt.pickidlearning.FinalValue;
 import anhnt.pickidlearning.R;
-import anhnt.pickidlearning.ReadJson;
-import anhnt.pickidlearning.adapter.RecyclerViewAdapter;
 import anhnt.pickidlearning.fragment.PracticeFragment;
 import anhnt.pickidlearning.fragment.VocabularyFragment;
-import anhnt.pickidlearning.models.Category;
 
 public class MainActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
@@ -75,18 +58,19 @@ public class MainActivity extends AppCompatActivity {
 //                    tab.setText("Practice");
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fr_container, new PracticeFragment())
+                            .addToBackStack(null)
                             .commit();
                 }
-                ViewGroup vg = (ViewGroup) mTabLayout.getChildAt(0);
-                int delay = 100; //this is starting delay
-                ViewGroup vgTab = (ViewGroup) vg.getChildAt(tab.getPosition());
-                vgTab.setScaleX(0f);
-                vgTab.setScaleY(0f);
-                vgTab.animate()
-                        .scaleX(1f)
-                        .scaleY(1f)
-                        .setStartDelay(delay)
-                        .start();
+//                ViewGroup vg = (ViewGroup) mTabLayout.getChildAt(0);
+//                int delay = 100; //this is starting delay
+//                ViewGroup vgTab = (ViewGroup) vg.getChildAt(tab.getPosition());
+//                vgTab.setScaleX(0f);
+//                vgTab.setScaleY(0f);
+//                vgTab.animate()
+//                        .scaleX(1f)
+//                        .scaleY(1f)
+//                        .setStartDelay(delay)
+//                        .start();
             }
 
             @Override

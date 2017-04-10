@@ -53,6 +53,42 @@ public class ReadJson {
         }
         return items;
     }
+
+    public static List<Item> readItemById(Context context, int mCategoryId) throws IOException, JSONException {
+        List<Item> items = new ArrayList<>();
+        String text = readText(context, R.raw.items);
+        JSONArray jsonArray = new JSONArray(text);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            int id = jsonObject.getInt("id");
+            String image = jsonObject.getString("image");
+            String name = jsonObject.getString("name");
+            String sound = jsonObject.getString("sound");
+            int categoryId = jsonObject.getInt("categoryId");
+            Item item = new Item(id, image, name, sound, categoryId);
+            if (categoryId == mCategoryId) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    public static List<Item> getItemByItemID(Context context, int itemID) throws IOException, JSONException {
+        List<Item> items = new ArrayList<>();
+        String text = readText(context, R.raw.items);
+        JSONArray jsonArray = new JSONArray(text);
+        JSONObject jsonObject = jsonArray.getJSONObject(itemID);
+        int id = jsonObject.getInt("id");
+        String image = jsonObject.getString("image");
+        String name = jsonObject.getString("name");
+        String sound = jsonObject.getString("sound");
+        int categoryId = jsonObject.getInt("categoryId");
+        Item item = new Item(id, image, name, sound, categoryId);
+        items.add(item);
+        return items;
+    }
+
+
     public static List<Category> getType(Context context) throws IOException, JSONException {
         List<Category> types = new ArrayList<>();
         String text = readText(context, R.raw.type);

@@ -5,9 +5,9 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    android:background="@color/background">
+    tools:openDrawer="start">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,11 +34,12 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentBottom="true"
-            app:tabSelectedTextColor="@color/colorToolbar"
-            app:tabTextColor="#A0FFC107"
-            app:tabBackground="@color/button_color_normal"
-            app:tabIndicatorColor="@color/colorToolbar"
-            app:tabTextAppearance="@style/MyCustomTextAppearance" />
+            app:tabBackground="@color/colorToolbar"
+            app:tabIndicatorColor="@color/button_color_normal"
+            app:tabIndicatorHeight="@dimen/indicator_tab_layout_height"
+            app:tabSelectedTextColor="@color/button_color_normal"
+            app:tabTextAppearance="@style/MyCustomTextAppearance"
+            app:tabTextColor="@color/button_color_normal" />
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView
