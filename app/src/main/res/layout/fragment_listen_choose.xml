@@ -204,7 +204,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/gi_help_phon" />
+            android:src="@mipmap/gi_help_phon"
+            android:layout_marginBottom="@dimen/default_margin"/>
 
         <ImageView
             android:id="@+id/img_play_sound"
@@ -213,7 +214,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/gi_play_sound" />
+            android:src="@mipmap/gi_play_sound"
+            android:layout_marginBottom="@dimen/default_margin"
+            />
     </RelativeLayout>
 
 </LinearLayout>

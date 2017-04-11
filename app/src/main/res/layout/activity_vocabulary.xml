@@ -113,6 +113,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="@dimen/tv_word_margin_top"
                 android:text="word"
+                android:textColor="@color/colorToolbar"
                 android:textStyle="bold" />
 
         </RelativeLayout>
