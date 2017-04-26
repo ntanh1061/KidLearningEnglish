@@ -187,6 +187,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/default_margin_top"
         android:text="Word"
+        android:textColor="@color/button_color_normal"
         android:textSize="@dimen/text_name_size"
         android:textStyle="bold" />
 </LinearLayout>

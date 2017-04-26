@@ -337,6 +337,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+
     private void showButtonNextPrev(int position) {
         mImgNextPage.setVisibility(View.VISIBLE);
         if (position != 0) {
@@ -353,4 +354,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         mViewPager.setCurrentItem(position);
         mPagerAdapter.notifyDataSetChanged();
     }
+
+
 }

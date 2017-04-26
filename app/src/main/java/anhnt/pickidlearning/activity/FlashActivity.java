@@ -26,7 +26,7 @@ public class FlashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Bundle bundle = new Bundle();
-                Intent intent = new Intent(FlashActivity.this, PracticActivity.class);
+                Intent intent = new Intent(FlashActivity.this, MainActivity.class);
                 bundle.putInt(ConstValue.SEND_TYPE_ID, 0);
                 intent.putExtras(bundle);
                 startActivity(intent);

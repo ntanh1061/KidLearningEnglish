@@ -188,24 +188,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
+
         <TextView
             android:id="@+id/tv_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/default_margin_top"
-            android:text="Word"
+            android:textColor="@color/button_color_normal"
             android:textSize="@dimen/text_name_size"
             android:textStyle="bold"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/img_help_phon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/gi_help_phon"
-            android:layout_marginBottom="@dimen/default_margin"/>
+            android:layout_marginBottom="@dimen/default_margin"
+            android:src="@mipmap/gi_help_phon" />
 
         <ImageView
             android:id="@+id/img_play_sound"
@@ -214,9 +215,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/gi_play_sound"
             android:layout_marginBottom="@dimen/default_margin"
-            />
+            android:src="@mipmap/gi_play_sound" />
     </RelativeLayout>
 
 </LinearLayout>

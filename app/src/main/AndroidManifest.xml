@@ -17,7 +17,8 @@
         </activity>
         <activity
             android:name=".activity.VocabularyActivity"
-            android:parentActivityName=".activity.PracticActivity" />
+            android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.PracticActivity" />
     </application>
 
