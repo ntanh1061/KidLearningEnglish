@@ -11,14 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
@@ -48,13 +45,13 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
     private TextView mTvWord;
     private List<Item> items;
     private int resID;
-    private int mItemID1 = -1;
-    private int mItemID2 = -1;
-    private int mItemID3 = -1;
-    private int mItemID4 = -1;
+    private int mItemIdPosition1 = -1;
+    private int mItemIdPosition2 = -1;
+    private int mItemIdPosition3 = -1;
+    private int mItemIdPosition4 = -1;
     private Handler mHandler;
     public ISendItemID iSendItemID;
-    private int practicId;
+    private int mCategoryId;
 
     @Override
     public void onAttach(Context context) {
@@ -69,38 +66,37 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
         init(view);
         mBundle = getArguments();
         arrItemId = mBundle.getIntArray(ConstValue.ITEM_ID_ARRAY);
-        practicId = mBundle.getInt(ConstValue.PRACTIC_ID);
-        mTvWord.setText(getItems(arrItemId[0] - 1).get(0).getName().toLowerCase().toString());
-        mItemID1 = getRandom(0, 3, mItemID2, mItemID3, mItemID4);
-        mItemID2 = getRandom(0, 3, mItemID1, mItemID3, mItemID4);
-        mItemID3 = getRandom(0, 3, mItemID1, mItemID2, mItemID4);
-        mItemID4 = getRandom(0, 3, mItemID1, mItemID3, mItemID2);
+        mCategoryId = mBundle.getInt(ConstValue.CATEGORY_ID);
+        mTvWord.setText(getItems(arrItemId[0] - 1).getName().toLowerCase().toString());
+        mItemIdPosition1 = getRandom(0, 3, mItemIdPosition2, mItemIdPosition3, mItemIdPosition4);
+        mItemIdPosition2 = getRandom(0, 3, mItemIdPosition1, mItemIdPosition3, mItemIdPosition4);
+        mItemIdPosition3 = getRandom(0, 3, mItemIdPosition1, mItemIdPosition2, mItemIdPosition4);
+        mItemIdPosition4 = getRandom(0, 3, mItemIdPosition1, mItemIdPosition3, mItemIdPosition2);
 
-        setImage(mItemID1, mImgImage1);
-        setImage(mItemID2, mImgImage2);
-        setImage(mItemID3, mImgImage3);
-        setImage(mItemID4, mImgImage4);
-
-        Log.d("test", "onCreateView: " + mItemID1 + mItemID2 + mItemID3 + mItemID4);
+        setImage(mItemIdPosition1, mImgImage1);
+        setImage(mItemIdPosition2, mImgImage2);
+        setImage(mItemIdPosition3, mImgImage3);
+        setImage(mItemIdPosition4, mImgImage4);
 
         return view;
     }
 
     public void setImage(int position, ImageView view) {
-        resID = getContext().getResources().getIdentifier(getItems(arrItemId[position] - 1).get(0).getImage().toString(), "drawable", getContext().getPackageName());
+        resID = getContext().getResources().getIdentifier(getItems(arrItemId[position] - 1).getImage().toString(), "drawable", getContext().getPackageName());
         view.setImageDrawable(getContext().getResources().getDrawable(resID));
     }
 
-    public List<Item> getItems(int itemID) {
-        items = new ArrayList<>();
+
+    public Item getItems(int itemID) {
+        Item item = null;
         try {
-            items.addAll(ReadJson.getItemByItemID(getContext(), itemID));
+            item = ReadJson.getItemByItemID(getContext(), itemID);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return items;
+        return item;
     }
 
     public void init(View view) {
@@ -128,57 +124,31 @@ public class FindImageFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_image_view_1:
-                if (mItemID1 == 0) {
-                    mViewRight1.setVisibility(View.VISIBLE);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            iSendItemID.sendItemID(arrItemId[0], practicId);
-                        }
-                    }, 1000);
-                } else {
-                    mViewWrong1.setVisibility(View.VISIBLE);
-                }
+                setClick(mItemIdPosition1, mViewRight1, mViewWrong1);
                 break;
             case R.id.img_image_view_2:
-                if (mItemID2 == 0) {
-                    mViewRight2.setVisibility(View.VISIBLE);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            iSendItemID.sendItemID(arrItemId[0], practicId);
-                        }
-                    }, 1000);
-                } else {
-                    mViewWrong2.setVisibility(View.VISIBLE);
-                }
+                setClick(mItemIdPosition2, mViewRight2, mViewWrong2);
                 break;
             case R.id.img_image_view_3:
-                if (mItemID3 == 0) {
-                    mViewRight3.setVisibility(View.VISIBLE);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            iSendItemID.sendItemID(arrItemId[0], practicId);
-                        }
-                    }, 1000);
-                } else {
-                    mViewWrong3.setVisibility(View.VISIBLE);
-                }
+                setClick(mItemIdPosition3, mViewRight3, mViewWrong3);
                 break;
             case R.id.img_image_view_4:
-                if (mItemID4 == 0) {
-                    mViewRight4.setVisibility(View.VISIBLE);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            iSendItemID.sendItemID(arrItemId[0], practicId);
-                        }
-                    }, 1000);
-                } else {
-                    mViewWrong4.setVisibility(View.VISIBLE);
-                }
+                setClick(mItemIdPosition4, mViewRight4, mViewWrong4);
                 break;
+        }
+    }
+
+    public void setClick(int itemID, View imageViewRight, View imageViewWrong) {
+        if (itemID == 0) {
+            imageViewRight.setVisibility(View.VISIBLE);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    iSendItemID.sendItemID(arrItemId[0], 4);
+                }
+            }, 1000);
+        } else {
+            imageViewWrong.setVisibility(View.VISIBLE);
         }
     }
 

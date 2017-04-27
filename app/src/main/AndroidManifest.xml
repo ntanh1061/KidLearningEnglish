@@ -19,7 +19,9 @@
             android:name=".activity.VocabularyActivity"
             android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.PracticActivity" />
+        <activity
+            android:name=".activity.PracticActivity"
+            android:parentActivityName=".activity.MainActivity" />
     </application>
 
 </manifest>

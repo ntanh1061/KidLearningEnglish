@@ -73,7 +73,7 @@ public class ReadJson {
         return items;
     }
 
-    public static List<Item> getItemByItemID(Context context, int itemID) throws IOException, JSONException {
+    public static Item getItemByItemID(Context context, int itemID) throws IOException, JSONException {
         List<Item> items = new ArrayList<>();
         String text = readText(context, R.raw.items);
         JSONArray jsonArray = new JSONArray(text);
@@ -84,8 +84,8 @@ public class ReadJson {
         String sound = jsonObject.getString("sound");
         int categoryId = jsonObject.getInt("categoryId");
         Item item = new Item(id, image, name, sound, categoryId);
-        items.add(item);
-        return items;
+//        items.add(item);
+        return item;
     }
 
 

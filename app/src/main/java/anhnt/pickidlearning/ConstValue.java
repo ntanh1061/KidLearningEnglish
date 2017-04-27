@@ -12,4 +12,5 @@ public class ConstValue {
     public static final String ITEM_ID_ARRAY = "item_id_arr";
     public static final String PRACTIC_NAME = "practic_name";
     public static final String PRACTIC_ID = "practic_id";
+    public static final String ITEM_ID = "item_id";
 }
