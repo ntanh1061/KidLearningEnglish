@@ -40,9 +40,9 @@ import anhnt.pickidlearning.myinterface.ISendItemID;
  * Created by AnhNT on 4/9/2017.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar mToolbar;
-    private int mCategoryId;
+    private int mCategoryId = 1;
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private String mCategoryName;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mToggle;
+    private int mPosition;
+    private ImageView mImgPlay;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,12 +84,14 @@ public class MainActivity extends AppCompatActivity {
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerViewType = (RecyclerView) findViewById(R.id.recyclerView);
+        mImgPlay = (ImageView) findViewById(R.id.img_play);
+        mImgPlay.setOnClickListener(this);
         types = new ArrayList<>();
     }
 
     public void setupRecyclerView() {
         mAdapter = new RecyclerViewAdapter(this, categories);
-        mLayoutManager = new GridLayoutManager(this, 2);
+        mLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new RecyclerViewAdapter.IOnItemClickListener() {
@@ -95,44 +99,15 @@ public class MainActivity extends AppCompatActivity {
             public void setOnItemClick(int position) {
                 mCategoryId = categories.get(position).getId();
                 mCategoryName = categories.get(position).getName().toLowerCase().toString();
-                getItems(mCategoryId);
-                switch (mPracticId) {
-                    case 0:
-                        actionActivity(position);
-                        break;
-                    case 1:
-                        actionActivity(position);
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-//                        mListenChooseFragment = new ListenChooseFragment();
-//                        setmArrItemId();
-//                        mPracticName = "Find Image";
-//                        setupFragment(mListenChooseFragment, true);
-//                        setTitleToolbar();
-//                        Intent intent = new Intent(MainActivity.this,PracticActivity.class);
-//                        intent.putExtra(ConstValue.ITEM_ID,items.get(0).getId());
-//                        intent.putExtra(ConstValue.PRACTIC_ID,mCategoryId);
-//                        startActivity(intent);
-                        actionPracticActivity(3);
-                        break;
-                    case 4:
-//                        mFindImageFragment = new FindImageFragment();
-//                        setmArrItemId();
-//                        mPracticName = "Listen & Choose";
-//                        setupFragment(mFindImageFragment, true);
-//                        setTitleToolbar();
-                        actionPracticActivity(4);
-                        break;
-                    case 5:
-                        break;
-                }
+                mPosition = position;
+                mLayoutManager.scrollToPosition(position);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
 
     public void actionPracticActivity(int practicId) {
+        getItems(mCategoryId);
         Bundle bundle = new Bundle();
         Intent intent = new Intent(MainActivity.this, PracticActivity.class);
         bundle.putInt(ConstValue.ITEM_ID, items.get(0).getId());
@@ -205,6 +180,44 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (mPracticId) {
+            case 0:
+                actionActivity(mPosition);
+                break;
+            case 1:
+
+                break;
+            case 2:
+                actionPracticActivity(2);
+                break;
+            case 3:
+//                        mListenChooseFragment = new ListenChooseFragment();
+//                        setmArrItemId();
+//                        mPracticName = "Find Image";
+//                        setupFragment(mListenChooseFragment, true);
+//                        setTitleToolbar();
+//                        Intent intent = new Intent(MainActivity.this,PracticActivity.class);
+//                        intent.putExtra(ConstValue.ITEM_ID,items.get(0).getId());
+//                        intent.putExtra(ConstValue.PRACTIC_ID,mCategoryId);
+//                        startActivity(intent);
+                actionPracticActivity(3);
+                break;
+            case 4:
+//                        mFindImageFragment = new FindImageFragment();
+//                        setmArrItemId();
+//                        mPracticName = "Listen & Choose";
+//                        setupFragment(mFindImageFragment, true);
+//                        setTitleToolbar();
+                actionPracticActivity(4);
+                break;
+            case 5:
+                break;
         }
     }
 }

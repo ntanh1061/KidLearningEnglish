@@ -3,6 +3,7 @@ package anhnt.pickidlearning.adapter;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
@@ -60,13 +61,13 @@ public class RecyclerViewTypeAdapter extends RecyclerView.Adapter<RecyclerViewTy
         });
 
         if (curentPosition == position) {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFA000"));
+            holder.imgCategory.setBackgroundColor(Color.parseColor("#088fd7"));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.imgCategory.setImageTintList(ColorStateList.valueOf(Color.WHITE));
             }
         } else {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-            holder.imgCategory.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FFA000")));
+            holder.imgCategory.setBackground(mContext.getDrawable(R.drawable.border_image_custom));
+            holder.imgCategory.setImageTintList(ColorStateList.valueOf(Color.parseColor("#088fd7")));
         }
     }
 

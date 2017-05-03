@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <gradient android:startColor="#A60470F4"
+                android:endColor="#0470f4"
+                android:centerColor="#0470f4"/>
+
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/button_color_normal" />
+        </shape>
+    </item>
+</selector>

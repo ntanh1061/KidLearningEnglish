@@ -2,7 +2,11 @@ package anhnt.pickidlearning.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.speech.tts.SynthesisCallback;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,12 +23,14 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.fragment.FindImageFragment;
 import anhnt.pickidlearning.fragment.ListenChooseFragment;
+import anhnt.pickidlearning.fragment.ListenWriteFragment;
 import anhnt.pickidlearning.models.Item;
 import anhnt.pickidlearning.myinterface.ISendItemID;
 
@@ -35,6 +41,7 @@ import anhnt.pickidlearning.myinterface.ISendItemID;
 public class PracticActivity extends AppCompatActivity implements ISendItemID, View.OnClickListener {
     private Fragment mFindImageFragment;
     private Fragment mListenChooseFragment;
+    private ListenWriteFragment mListenWriteFragment;
     private Bundle mBundle;
     private int[] mArrItemId = new int[4];
     private int mCategoryId;
@@ -55,6 +62,7 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     private ImageView mImgReplay;
     private String mPracticName;
     private String mCategoryName;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +83,10 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
             case 1:
                 break;
             case 2:
+                mPracticName = "Listen & Write";
+                mListenWriteFragment = new ListenWriteFragment();
+                switchFragment(mListenWriteFragment);
+                String text = getItem(mItemID1).getName();
                 break;
             case 3:
                 mPracticName = "Listen & Choose";
@@ -85,6 +97,8 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
                 mPracticName = "Find Image";
                 mFindImageFragment = new FindImageFragment();
                 switchFragment(mFindImageFragment);
+                break;
+            case 5:
                 break;
         }
     }
@@ -102,6 +116,7 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
         mImgHome.setOnClickListener(this);
         mImgNext.setOnClickListener(this);
         mImgReplay.setOnClickListener(this);
+        mHandler = new Handler();
     }
 
     public void setmArrItemId() {
@@ -124,14 +139,17 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     @Override
     public void sendItemID(int itemID, int practicId) {
         mItemID1 = itemID;
-//        if (mItemID1 == items.get(items.size() - 1).getId()) {
-//            mRelativeLayout.setVisibility(View.VISIBLE);
-//        }
-        mRelativeLayout.setVisibility(View.VISIBLE);
+        if (mItemID1 == items.get(items.size() - 1).getId()) {
+            mRelativeLayout.setVisibility(View.VISIBLE);
+        }
         mItemID1++;
         pos1++;
         setmArrItemId();
         switch (practicId) {
+            case 2:
+                mListenWriteFragment = new ListenWriteFragment();
+                switchFragment(mListenWriteFragment);
+                break;
             case 3:
                 mListenChooseFragment = new ListenChooseFragment();
                 switchFragment(mListenChooseFragment);
@@ -181,6 +199,7 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     public void setTitleToolbar() {
         getSupportActionBar().setTitle(mPracticName);
         mToolbar.setTitleTextColor(Color.WHITE);
+        mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setSubtitle(mCategoryName);
         mToolbar.setSubtitleTextColor(Color.WHITE);
     }
@@ -193,9 +212,11 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
                 break;
             case R.id.img_next:
                 actionPracticActivity(mPracticId, mCategoryId + 1);
+                mRelativeLayout.setVisibility(View.GONE);
                 break;
             case R.id.img_replay:
                 actionPracticActivity(mPracticId, mCategoryId);
+                mRelativeLayout.setVisibility(View.GONE);
                 break;
         }
     }
@@ -210,5 +231,17 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
         bundle.putString(ConstValue.SEND_CATEGORY_NAME, mCategoryName);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public Item getItem(int itemID) {
+        Item item = null;
+        try {
+            item = ReadJson.getItemByItemID(this, itemID);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 }

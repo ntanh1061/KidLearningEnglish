@@ -1,6 +1,7 @@
 package anhnt.pickidlearning.activity;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -40,7 +41,6 @@ import anhnt.pickidlearning.models.Item;
 
 public class VocabularyActivity extends AppCompatActivity implements View.OnClickListener {
     private ViewPager mViewPager;
-    private ProgressBar mProgressBar;
     private DetailPagerAdapter mPagerAdapter;
     private List<Item> mItems;
     private List<Item> mAllItems;
@@ -65,6 +65,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private Animation mAnimation;
     private ImageView mImgNextPage;
     private ImageView mImgPrevPage;
+    private MyAsyncTask myAsyncTask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,14 +77,11 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         setViewPager();
         setChoiceText();
 
-        word = mItems.get(mPositionItem).getName().toString();
-        readText(word);
-        mProgressBar.setMax(mItems.size());
-        mTvWord.setText(word);
-
+        myAsyncTask.execute();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                readText(word);
                 showButtonNextPrev(mPositionItem);
             }
         }, 1500);
@@ -99,7 +97,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 mPositionItem = position;
                 setChoiceText();
                 hideButtonNextPrev();
-                mProgressBar.setProgress(position);
                 word = mItems.get(mPositionItem).getName().toString();
                 mTvWord.setText(word);
                 mTextToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
@@ -135,6 +132,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void init() {
+        myAsyncTask = new MyAsyncTask();
         mImgSpeaker = (ImageView) findViewById(R.id.img_speaker);
         mImgReturn = (ImageView) findViewById(R.id.img_return);
         mImgHome = (ImageView) findViewById(R.id.img_home);
@@ -148,7 +146,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         categories = new ArrayList<>();
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mHandler = new Handler();
         mImgSpeaker.setOnClickListener(this);
         mImgReturn.setOnClickListener(this);
@@ -246,7 +243,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 changeViewPager(mPositionItem);
                 break;
             case R.id.img_next:
-                mProgressBar.setProgress(0);
                 mItems.clear();
                 if (mCategoryId < 9) {
                     mCategoryId++;
@@ -286,7 +282,7 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
             public void run() {
                 mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
             }
-        }, 500);
+        }, 50);
     }
 
 
@@ -355,5 +351,25 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         mPagerAdapter.notifyDataSetChanged();
     }
 
+    class MyAsyncTask extends AsyncTask<Void, String, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            word = mItems.get(mPositionItem).getName().toString();
+            return word;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            readText(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            mTvWord.setText(values[0]);
+        }
+    }
 
 }
