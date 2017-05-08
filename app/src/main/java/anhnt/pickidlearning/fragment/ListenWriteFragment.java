@@ -66,6 +66,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
     private int mPosition = 0;
     private String wordArr[] = new String[10];
     private String charWordArr[];
+    private String checkChar[];
     private int i1 = -1;
     private int i2 = -1;
     private int i3 = -1;
@@ -82,6 +83,8 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
     private ImageView mImgSpeak;
     private String wordCompare = "";
     private TextToSpeech mTextToSpeech;
+    private int check = -1;
+    private int checkPosition = -1;
 
 
     @Override
@@ -104,6 +107,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
             @Override
             public void run() {
                 readText(mWord);
+                mHandler.removeCallbacks(null);
             }
         }, 500);
         setImage(mImgDetail);
@@ -112,8 +116,10 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
             charArr[wordCount] = String.valueOf(word);
             wordCount++;
         }
+        checkChar = new String[charWordArr.length - 1];
         for (int i = 0; i < charWordArr.length - 1; i++) {
             charArr[i] = charWordArr[i + 1];
+            checkChar[i] = charWordArr[i + 1];
         }
         Xoatrung(charArr);
         setButton(btn_one, charArr[i1 = getRandom(0, 9, i1, i2, i3, i4, i5, i6, i7, i8, i9)]);
@@ -135,8 +141,9 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
         for (int i = 0; i < charWordArr.length; i++) {
             Log.d("Chuoi", "onCreateView: " + charWordArr[i]);
         }
-        for (int i = 0; i < charWordArr.length - 1; i++) {
+        for (int i = 0; i < checkChar.length; i++) {
             setmWord(i, view, "");
+            Log.d("Test", "onCreateView: " + checkChar[i]);
         }
         for (int i = 0; i < 10; i++) {
             wordArr[i] = getTextButton(view, i);
@@ -224,60 +231,44 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
     }
 
     public void setBackgroundRight(int position) {
-        for (int j = 0; j < 10; j++) {
-            if (charArr[position] == charArr[j]) {
-                if (j == i1) {
-                    setBackgroundButton(btn_one, true);
-                }
-                if (j == i2) {
-                    setBackgroundButton(btn_two, true);
-                }
-                if (j == i3) {
-                    setBackgroundButton(btn_three, true);
-                }
-                if (j == i4) {
-                    setBackgroundButton(btn_four, true);
-                }
-                if (j == i5) {
-                    setBackgroundButton(btn_five, true);
-                }
-                if (j == i6) {
-                    setBackgroundButton(btn_six, true);
-                }
-                if (j == i7) {
-                    setBackgroundButton(btn_seven, true);
-                }
-                if (j == i8) {
-                    setBackgroundButton(btn_eight, true);
-                }
-                if (j == i9) {
-                    setBackgroundButton(btn_nine, true);
-                }
-                if (j == i10) {
-                    setBackgroundButton(btn_ten, true);
-                }
-                break;
-            }
+        if (checkChar[position] == charArr[check + 1]) {
+            check++;
         }
+        if (check == i1) {
+            setBackgroundButton(btn_one, true);
+        }
+        if (check == i2) {
+            setBackgroundButton(btn_two, true);
+        }
+        if (check == i3) {
+            setBackgroundButton(btn_three, true);
+        }
+        if (check == i4) {
+            setBackgroundButton(btn_four, true);
+        }
+        if (check == i5) {
+            setBackgroundButton(btn_five, true);
+        }
+        if (check == i6) {
+            setBackgroundButton(btn_six, true);
+        }
+        if (check == i7) {
+            setBackgroundButton(btn_seven, true);
+        }
+        if (check == i8) {
+            setBackgroundButton(btn_eight, true);
+        }
+        if (check == i9) {
+            setBackgroundButton(btn_nine, true);
+        }
+        if (check == i10) {
+            setBackgroundButton(btn_ten, true);
+        }
+
     }
-//
-//    public void setButtonWrong(int position){
-//            setBackgroundButton(btn_one, true);
-//            setBackgroundButton(btn_two, true);
-//            setBackgroundButton(btn_three, true);
-//            setBackgroundButton(btn_four, true);
-//            setBackgroundButton(btn_five, true);
-//            setBackgroundButton(btn_six, true);
-//            setBackgroundButton(btn_seven, true);
-//            setBackgroundButton(btn_eight, true);
-//            setBackgroundButton(btn_nine, true);
-//            setBackgroundButton(btn_ten, true);
-//
-//    }
 
     @Override
     public void onClick(View v) {
-//        String wordCompare = "";
         switch (v.getId()) {
             case R.id.btn_0:
                 wordCompare = getTextButton(v, 0);
@@ -321,7 +312,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
                 break;
         }
 
-        if (charArr[mPosition] == wordCompare) {
+        if (String.valueOf(checkChar[mPosition]).equalsIgnoreCase(String.valueOf(wordCompare))) {
             switch (mPosition) {
                 case 0:
                     tv_char_0.setText(wordCompare);
@@ -389,7 +380,9 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
                     checkWordFinish(mPosition);
                     break;
             }
-            setBackgroundRight(mPosition);
+            if (mPosition < checkChar.length) {
+                setBackgroundRight(mPosition);
+            }
         }
         if (v.getId() == R.id.img_help) {
             tv_char_0.setText(mWord);
@@ -400,6 +393,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
                 public void run() {
                     tv_char_0.setVisibility(View.GONE);
                     setTextVisibility();
+                    mHandler.removeCallbacks(null);
                 }
             }, 1000);
         }
@@ -409,13 +403,14 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
     }
 
     public void checkWordFinish(int position) {
-        if (position == charWordArr.length - 1) {
+        if (position == checkChar.length) {
             setClick();
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tv_char_0.setVisibility(View.GONE);
                     setTextVisibility();
+                    mHandler.removeCallbacks(null);
                 }
             }, 1000);
 
@@ -450,7 +445,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
         int tvID = getContext().getResources().getIdentifier("tv_char_" + position, "id", getContext().getPackageName());
         TextView tv = (TextView) view.findViewById(tvID);
         tv.setVisibility(View.VISIBLE);
-        tv.setText(" _ " + word);
+        tv.setText(" _ ");
     }
 
     public String getTextButton(View view, int position) {
@@ -472,6 +467,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
             @Override
             public void run() {
                 iSendItemID.sendItemID(arrItemId[0], 2);
+                mHandler.removeCallbacks(null);
             }
         }, 1000);
     }
@@ -482,6 +478,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
             @Override
             public void run() {
                 mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                mHandler.removeCallbacks(null);
             }
         }, 50);
     }
