@@ -28,9 +28,11 @@ import java.util.Locale;
 import anhnt.pickidlearning.ConstValue;
 import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
+import anhnt.pickidlearning.fragment.ChooseWordFragment;
 import anhnt.pickidlearning.fragment.FindImageFragment;
 import anhnt.pickidlearning.fragment.ListenChooseFragment;
 import anhnt.pickidlearning.fragment.ListenWriteFragment;
+import anhnt.pickidlearning.fragment.WriteWordFragment;
 import anhnt.pickidlearning.models.Item;
 import anhnt.pickidlearning.myinterface.ISendItemID;
 
@@ -42,6 +44,8 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     private Fragment mFindImageFragment;
     private Fragment mListenChooseFragment;
     private ListenWriteFragment mListenWriteFragment;
+    private ChooseWordFragment mChooseWordFragment;
+    private WriteWordFragment mWriteWordFragment;
     private Bundle mBundle;
     private int[] mArrItemId = new int[4];
     private int mCategoryId;
@@ -78,15 +82,15 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     public void setFragment(int practicId) {
         setmArrItemId();
         switch (practicId) {
-            case 0:
-                break;
             case 1:
+                mPracticName = "Write Word";
+                mWriteWordFragment = new WriteWordFragment();
+                switchFragment(mWriteWordFragment);
                 break;
             case 2:
                 mPracticName = "Listen & Write";
                 mListenWriteFragment = new ListenWriteFragment();
                 switchFragment(mListenWriteFragment);
-                String text = getItem(mItemID1).getName();
                 break;
             case 3:
                 mPracticName = "Listen & Choose";
@@ -99,6 +103,9 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
                 switchFragment(mFindImageFragment);
                 break;
             case 5:
+                mPracticName = "Choose Wrod";
+                mChooseWordFragment = new ChooseWordFragment();
+                switchFragment(mChooseWordFragment);
                 break;
         }
     }
@@ -146,6 +153,10 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
         pos1++;
         setmArrItemId();
         switch (practicId) {
+            case 1:
+                mWriteWordFragment = new WriteWordFragment();
+                switchFragment(mWriteWordFragment);
+                break;
             case 2:
                 mListenWriteFragment = new ListenWriteFragment();
                 switchFragment(mListenWriteFragment);
@@ -158,6 +169,9 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
                 mFindImageFragment = new FindImageFragment();
                 switchFragment(mFindImageFragment);
                 break;
+            case 5:
+                mChooseWordFragment = new ChooseWordFragment();
+                switchFragment(mChooseWordFragment);
         }
     }
 

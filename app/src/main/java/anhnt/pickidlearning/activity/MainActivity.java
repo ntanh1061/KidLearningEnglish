@@ -191,32 +191,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 actionActivity(mPosition);
                 break;
             case 1:
-
+                actionPracticActivity(1);
                 break;
             case 2:
                 actionPracticActivity(2);
                 break;
             case 3:
-//                        mListenChooseFragment = new ListenChooseFragment();
-//                        setmArrItemId();
-//                        mPracticName = "Find Image";
-//                        setupFragment(mListenChooseFragment, true);
-//                        setTitleToolbar();
-//                        Intent intent = new Intent(MainActivity.this,PracticActivity.class);
-//                        intent.putExtra(ConstValue.ITEM_ID,items.get(0).getId());
-//                        intent.putExtra(ConstValue.PRACTIC_ID,mCategoryId);
-//                        startActivity(intent);
                 actionPracticActivity(3);
                 break;
             case 4:
-//                        mFindImageFragment = new FindImageFragment();
-//                        setmArrItemId();
-//                        mPracticName = "Listen & Choose";
-//                        setupFragment(mFindImageFragment, true);
-//                        setTitleToolbar();
                 actionPracticActivity(4);
                 break;
             case 5:
+                actionPracticActivity(5);
                 break;
         }
     }
