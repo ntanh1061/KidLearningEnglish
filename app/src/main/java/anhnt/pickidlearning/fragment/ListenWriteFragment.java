@@ -83,7 +83,7 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
     private ImageView mImgSpeak;
     private String wordCompare = "";
     private TextToSpeech mTextToSpeech;
-    private int check = -1;
+    private int check = 0;
     private int checkPosition = -1;
 
 
@@ -231,8 +231,10 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
     }
 
     public void setBackgroundRight(int position) {
-        if (checkChar[position] == charArr[check + 1]) {
-            check++;
+        if (position>0){
+            if (!checkChar[position - 1].equalsIgnoreCase(checkChar[position])) {
+                check++;
+            }
         }
         if (check == i1) {
             setBackgroundButton(btn_one, true);
@@ -312,98 +314,100 @@ public class ListenWriteFragment extends Fragment implements View.OnClickListene
                 break;
         }
 
-        if (String.valueOf(checkChar[mPosition]).equalsIgnoreCase(String.valueOf(wordCompare))) {
-            switch (mPosition) {
-                case 0:
-                    tv_char_0.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 1:
-                    tv_char_1.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 2:
-                    tv_char_2.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 3:
-                    tv_char_3.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 4:
-                    tv_char_4.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 5:
-                    tv_char_5.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 6:
-                    tv_char_6.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 7:
-                    tv_char_7.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 8:
-                    tv_char_8.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 9:
-                    tv_char_9.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 10:
-                    tv_char_10.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 11:
-                    tv_char_11.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 12:
-                    tv_char_12.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-            }
-            if (mPosition < checkChar.length) {
-                setBackgroundRight(mPosition);
-            }
-        }
-        if (v.getId() == R.id.img_help) {
-            tv_char_0.setText(mWord);
-            setTextVisibility();
-            setClick();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    tv_char_0.setVisibility(View.GONE);
-                    setTextVisibility();
-                    mHandler.removeCallbacks(null);
+        if (mPosition < checkChar.length) {
+            if (String.valueOf(checkChar[mPosition]).equalsIgnoreCase(String.valueOf(wordCompare))) {
+                switch (mPosition) {
+                    case 0:
+                        tv_char_0.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 1:
+                        tv_char_1.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 2:
+                        tv_char_2.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 3:
+                        tv_char_3.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 4:
+                        tv_char_4.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 5:
+                        tv_char_5.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 6:
+                        tv_char_6.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 7:
+                        tv_char_7.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 8:
+                        tv_char_8.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 9:
+                        tv_char_9.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 10:
+                        tv_char_10.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 11:
+                        tv_char_11.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 12:
+                        tv_char_12.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
                 }
-            }, 1000);
-        }
-        if (v.getId() == R.id.img_play_sound) {
-            readText(mWord);
+                if (mPosition < checkChar.length) {
+                    setBackgroundRight(mPosition);
+                }
+            }
+            if (v.getId() == R.id.img_help) {
+                tv_char_0.setText(mWord);
+                setTextVisibility();
+                setClick();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv_char_0.setVisibility(View.GONE);
+                        setTextVisibility();
+                        mHandler.removeCallbacks(null);
+                    }
+                }, 1000);
+            }
+            if (v.getId() == R.id.img_play_sound) {
+                readText(mWord);
+            }
         }
     }
 
-    public void checkWordFinish(int position) {
-        if (position == checkChar.length) {
+    public void checkWordFinish(String word, int position) {
+        if (position == checkChar.length && word.equalsIgnoreCase(checkChar[position - 1])) {
             setClick();
             mHandler.postDelayed(new Runnable() {
                 @Override

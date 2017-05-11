@@ -146,33 +146,35 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     @Override
     public void sendItemID(int itemID, int practicId) {
         mItemID1 = itemID;
-        if (mItemID1 == items.get(items.size() - 1).getId()) {
-            mRelativeLayout.setVisibility(View.VISIBLE);
-        }
         mItemID1++;
         pos1++;
         setmArrItemId();
-        switch (practicId) {
-            case 1:
-                mWriteWordFragment = new WriteWordFragment();
-                switchFragment(mWriteWordFragment);
-                break;
-            case 2:
-                mListenWriteFragment = new ListenWriteFragment();
-                switchFragment(mListenWriteFragment);
-                break;
-            case 3:
-                mListenChooseFragment = new ListenChooseFragment();
-                switchFragment(mListenChooseFragment);
-                break;
-            case 4:
-                mFindImageFragment = new FindImageFragment();
-                switchFragment(mFindImageFragment);
-                break;
-            case 5:
-                mChooseWordFragment = new ChooseWordFragment();
-                switchFragment(mChooseWordFragment);
+        if (mItemID1 == items.get(items.size() - 1).getId()) {
+            mRelativeLayout.setVisibility(View.VISIBLE);
+        } else {
+            switch (practicId) {
+                case 1:
+                    mWriteWordFragment = new WriteWordFragment();
+                    switchFragment(mWriteWordFragment);
+                    break;
+                case 2:
+                    mListenWriteFragment = new ListenWriteFragment();
+                    switchFragment(mListenWriteFragment);
+                    break;
+                case 3:
+                    mListenChooseFragment = new ListenChooseFragment();
+                    switchFragment(mListenChooseFragment);
+                    break;
+                case 4:
+                    mFindImageFragment = new FindImageFragment();
+                    switchFragment(mFindImageFragment);
+                    break;
+                case 5:
+                    mChooseWordFragment = new ChooseWordFragment();
+                    switchFragment(mChooseWordFragment);
+            }
         }
+
     }
 
     private int getRandom(int min, int max, int i1, int i2, int i3) {
@@ -188,7 +190,7 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
         mBundle.putIntArray(ConstValue.ITEM_ID_ARRAY, mArrItemId);
         mBundle.putInt(ConstValue.CATEGORY_ID, 1);
         fragment.setArguments(mBundle);
-        getSupportFragmentManager().beginTransaction().add(R.id.fr_container, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fr_container, fragment).commit();
     }
 
     public void setupToolbar() {

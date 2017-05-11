@@ -63,9 +63,10 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
     private TextView tv_char_11;
     private TextView tv_char_12;
     private int wordCount = 0;
-    private int mPosition = 0;
+    private int mPosition = 1;
     private String wordArr[] = new String[10];
     private String charWordArr[];
+    private String checkChar[];
     private int i1 = -1;
     private int i2 = -1;
     private int i3 = -1;
@@ -79,13 +80,9 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
     public ISendItemID iSendItemID;
     private int[] arrItemId;
     private ImageView mImgHelp;
-    private ImageView mImgSpeak;
     private String wordCompare = "";
-    private int position1;
-    private int position2;
-    private int position3;
-    private int position4;
-    private int position5;
+    private int check = 0;
+
 
     @Override
     public void onAttach(Context context) {
@@ -96,7 +93,7 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listen_write, container, false);
+        View view = inflater.inflate(R.layout.fragment_write_word, container, false);
         mImgDetail = (ImageView) view.findViewById(R.id.img_detail);
         init(view);
         mBundle = getArguments();
@@ -109,8 +106,10 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
             charArr[wordCount] = String.valueOf(word);
             wordCount++;
         }
+        checkChar = new String[charWordArr.length - 1];
         for (int i = 0; i < charWordArr.length - 1; i++) {
             charArr[i] = charWordArr[i + 1];
+            checkChar[i] = charWordArr[i + 1];
         }
         Xoatrung(charArr);
         setButton(btn_one, charArr[i1 = getRandom(0, 9, i1, i2, i3, i4, i5, i6, i7, i8, i9)]);
@@ -123,50 +122,13 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
         setButton(btn_eight, charArr[i8 = getRandom(0, 9, i1, i2, i3, i4, i5, i6, i7, i8, i9)]);
         setButton(btn_nine, charArr[i9 = getRandom(0, 9, i1, i2, i3, i4, i5, i6, i7, i8, i9)]);
         setButton(btn_ten, charArr[i10 = getRandom(0, 9, i1, i2, i3, i4, i5, i6, i7, i8, i9)]);
-        Log.d("Chuoi", "Cac ky tu " + i1 + ":" + i2 + ":" + i3 + ":" + i4 + ":" + i5 + ":" + i6 + ":" + i7 + ":" + i8 + ":" + i9 + ":");
-
-//        for (int i = 0; i < charArr.length; i++) {
-//            Log.d("Chuoi", "Cut: " + charArr[i]);
-//        }
-
-        for (int i = 0; i < charWordArr.length; i++) {
-            Log.d("Chuoi", "onCreateView: " + charWordArr[i]);
-        }
-        for (int i = 0; i < charWordArr.length - 1; i++) {
+        for (int i = 0; i < checkChar.length; i++) {
             setmWord(i, view, "", false);
-        }
-
-        if (charWordArr.length < 5) {
-            position1 = getRandom(0, charWordArr.length - 1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-            position2 = getRandom(0, charWordArr.length - 1, position1, -1, -1, -1, -1, -1, -1, -1, -1);
-            setmWord(position1, view, charWordArr[position1], true);
-            setmWord(position2, view, charWordArr[position2], true);
-            Log.d("Test", "onCreateView: " + position1 + ":" + position2);
-        }
-        if (charWordArr.length >= 5 && charWordArr.length < 9) {
-            position1 = getRandom(0, charWordArr.length - 1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-            position2 = getRandom(0, charWordArr.length - 1, position1, -1, -1, -1, -1, -1, -1, -1, -1);
-            position3 = getRandom(0, charWordArr.length - 1, position1, position2, -1, -1, -1, -1, -1, -1, -1);
-            setmWord(position1, view, charWordArr[position1], true);
-            setmWord(position2, view, charWordArr[position2], true);
-            setmWord(position3, view, charWordArr[position3], true);
-        }
-        if (charWordArr.length >= 9) {
-            position1 = getRandom(0, charWordArr.length - 1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
-            position2 = getRandom(0, charWordArr.length - 1, position1, -1, -1, -1, -1, -1, -1, -1, -1);
-            position3 = getRandom(0, charWordArr.length - 1, position1, position2, -1, -1, -1, -1, -1, -1, -1);
-            position4 = getRandom(0, charWordArr.length - 1, position1, position2, position3, -1, -1, -1, -1, -1, -1);
-            position5 = getRandom(0, charWordArr.length - 1, position1, position2, position3, position4, -1, -1, -1, -1, -1);
-            setmWord(position1, view, charWordArr[position1], true);
-            setmWord(position2, view, charWordArr[position2], true);
-            setmWord(position3, view, charWordArr[position3], true);
-            setmWord(position4, view, charWordArr[position4], true);
-            setmWord(position5, view, charWordArr[position5], true);
         }
         for (int i = 0; i < 10; i++) {
             wordArr[i] = getTextButton(view, i);
         }
-
+        tv_char_0.setText(checkChar[0]);
         setBackgroundRight(mPosition);
         return view;
     }
@@ -213,8 +175,6 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
         btn_five.setOnClickListener(this);
         mImgHelp = (ImageView) view.findViewById(R.id.img_help);
         mImgHelp.setOnClickListener(this);
-        mImgSpeak = (ImageView) view.findViewById(R.id.img_play_sound);
-        mImgSpeak.setOnClickListener(this);
         tv_char_0 = (TextView) view.findViewById(R.id.tv_char_0);
         tv_char_1 = (TextView) view.findViewById(R.id.tv_char_1);
         tv_char_2 = (TextView) view.findViewById(R.id.tv_char_2);
@@ -248,60 +208,44 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
     }
 
     public void setBackgroundRight(int position) {
-        for (int j = 0; j < 10; j++) {
-            if (charArr[position] == charArr[j]) {
-                if (j == i1) {
-                    setBackgroundButton(btn_one, true);
-                }
-                if (j == i2) {
-                    setBackgroundButton(btn_two, true);
-                }
-                if (j == i3) {
-                    setBackgroundButton(btn_three, true);
-                }
-                if (j == i4) {
-                    setBackgroundButton(btn_four, true);
-                }
-                if (j == i5) {
-                    setBackgroundButton(btn_five, true);
-                }
-                if (j == i6) {
-                    setBackgroundButton(btn_six, true);
-                }
-                if (j == i7) {
-                    setBackgroundButton(btn_seven, true);
-                }
-                if (j == i8) {
-                    setBackgroundButton(btn_eight, true);
-                }
-                if (j == i9) {
-                    setBackgroundButton(btn_nine, true);
-                }
-                if (j == i10) {
-                    setBackgroundButton(btn_ten, true);
-                }
-                break;
-            }
+        if (!checkChar[position - 1].equalsIgnoreCase(checkChar[position])) {
+            check++;
         }
+        if (check == i1) {
+            setBackgroundButton(btn_one, true);
+        }
+        if (check == i2) {
+            setBackgroundButton(btn_two, true);
+        }
+        if (check == i3) {
+            setBackgroundButton(btn_three, true);
+        }
+        if (check == i4) {
+            setBackgroundButton(btn_four, true);
+        }
+        if (check == i5) {
+            setBackgroundButton(btn_five, true);
+        }
+        if (check == i6) {
+            setBackgroundButton(btn_six, true);
+        }
+        if (check == i7) {
+            setBackgroundButton(btn_seven, true);
+        }
+        if (check == i8) {
+            setBackgroundButton(btn_eight, true);
+        }
+        if (check == i9) {
+            setBackgroundButton(btn_nine, true);
+        }
+        if (check == i10) {
+            setBackgroundButton(btn_ten, true);
+        }
+
     }
-    //
-//    public void setButtonWrong(int position){
-//            setBackgroundButton(btn_one, true);
-//            setBackgroundButton(btn_two, true);
-//            setBackgroundButton(btn_three, true);
-//            setBackgroundButton(btn_four, true);
-//            setBackgroundButton(btn_five, true);
-//            setBackgroundButton(btn_six, true);
-//            setBackgroundButton(btn_seven, true);
-//            setBackgroundButton(btn_eight, true);
-//            setBackgroundButton(btn_nine, true);
-//            setBackgroundButton(btn_ten, true);
-//
-//    }
 
     @Override
     public void onClick(View v) {
-//        String wordCompare = "";
         switch (v.getId()) {
             case R.id.btn_0:
                 wordCompare = getTextButton(v, 0);
@@ -344,99 +288,105 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
                 setBackgroundButton(btn_ten, false);
                 break;
         }
-
-        if (charWordArr[mPosition + 1] == wordCompare) {
-            switch (mPosition) {
-                case 0:
-                    tv_char_0.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 1:
-                    tv_char_1.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 2:
-                    tv_char_2.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 3:
-                    tv_char_3.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 4:
-                    tv_char_4.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 5:
-                    tv_char_5.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 6:
-                    tv_char_6.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 7:
-                    tv_char_7.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 8:
-                    tv_char_8.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 9:
-                    tv_char_9.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 10:
-                    tv_char_10.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 11:
-                    tv_char_11.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
-                case 12:
-                    tv_char_12.setText(wordCompare);
-                    mPosition++;
-                    checkWordFinish(mPosition);
-                    break;
+        if (mPosition<checkChar.length){
+            if (String.valueOf(checkChar[mPosition]).equalsIgnoreCase(String.valueOf(wordCompare))) {
+                switch (mPosition) {
+                    case 0:
+                        tv_char_0.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 1:
+                        tv_char_1.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 2:
+                        tv_char_2.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 3:
+                        tv_char_3.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 4:
+                        tv_char_4.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 5:
+                        tv_char_5.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 6:
+                        tv_char_6.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 7:
+                        tv_char_7.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 8:
+                        tv_char_8.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 9:
+                        tv_char_9.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 10:
+                        tv_char_10.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 11:
+                        tv_char_11.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                    case 12:
+                        tv_char_12.setText(wordCompare);
+                        mPosition++;
+                        checkWordFinish(wordCompare, mPosition);
+                        break;
+                }
+                if (mPosition < checkChar.length) {
+                    setBackgroundRight(mPosition);
+                }
             }
-            setBackgroundRight(mPosition);
         }
+
         if (v.getId() == R.id.img_help) {
             tv_char_0.setText(mWord);
             setTextVisibility();
-            checkWordFinish(charWordArr.length - 1);
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    tv_char_0.setVisibility(View.GONE);
-                    setTextVisibility();
-                }
-            }, 1000);
-        }
-    }
-
-    public void checkWordFinish(int position) {
-        if (position == charWordArr.length - 1) {
             setClick();
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tv_char_0.setVisibility(View.GONE);
                     setTextVisibility();
+                    mHandler.removeCallbacks(null);
+                }
+            }, 1000);
+        }
+    }
+
+    public void checkWordFinish(String word, int position) {
+        if (position == checkChar.length && word.equalsIgnoreCase(checkChar[position - 1])) {
+            setClick();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tv_char_0.setVisibility(View.GONE);
+                    setTextVisibility();
+                    mHandler.removeCallbacks(null);
                 }
             }, 1000);
 
@@ -484,6 +434,12 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
         return button.getText().toString();
     }
 
+    public String getTextTextView(View view, int position) {
+        int tvID = getContext().getResources().getIdentifier("tv_char_" + position, "id", getContext().getPackageName());
+        TextView tv = (TextView) view.findViewById(tvID);
+        return tv.getText().toString();
+    }
+
     private int getRandom(int min, int max, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9) {
         int i = (int) (Math.random() * (max - min + 1) + min);
         while (i == i1 || i == i2 || i == i3 || i == i4 || i == i5 || i == i6 || i == i7 || i == i8 || i == i9) {
@@ -497,6 +453,7 @@ public class WriteWordFragment extends Fragment implements View.OnClickListener 
             @Override
             public void run() {
                 iSendItemID.sendItemID(arrItemId[0], 1);
+                mHandler.removeCallbacks(null);
             }
         }, 1000);
     }
