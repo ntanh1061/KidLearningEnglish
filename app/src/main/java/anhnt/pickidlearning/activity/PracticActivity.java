@@ -67,6 +67,7 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
     private String mPracticName;
     private String mCategoryName;
     private Handler mHandler;
+    boolean checkPressTime = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -227,7 +228,11 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
                 finish();
                 break;
             case R.id.img_next:
-                actionPracticActivity(mPracticId, mCategoryId + 1);
+                if (mCategoryId <10){
+                    actionPracticActivity(mPracticId, mCategoryId + 1);
+                }else {
+                    actionPracticActivity(mPracticId, 1);
+                }
                 mRelativeLayout.setVisibility(View.GONE);
                 break;
             case R.id.img_replay:
@@ -247,6 +252,7 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
         bundle.putString(ConstValue.SEND_CATEGORY_NAME, mCategoryName);
         intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 
     public Item getItem(int itemID) {
@@ -259,5 +265,15 @@ public class PracticActivity extends AppCompatActivity implements ISendItemID, V
             e.printStackTrace();
         }
         return item;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (checkPressTime) {
+            super.onBackPressed();
+            return;
+        }
+        checkPressTime = true;
+        mRelativeLayout.setVisibility(View.VISIBLE);
     }
 }

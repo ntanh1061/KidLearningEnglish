@@ -65,7 +65,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private Animation mAnimation;
     private ImageView mImgNextPage;
     private ImageView mImgPrevPage;
-    private MyAsyncTask myAsyncTask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,15 +75,15 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
         setupToolbar();
         setViewPager();
         setChoiceText();
-
-        myAsyncTask.execute();
+        word = mItems.get(mPositionItem).getName().toString();
+        mTvWord.setText(word);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 readText(word);
                 showButtonNextPrev(mPositionItem);
             }
-        }, 1500);
+        }, 100);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -100,7 +99,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
                 word = mItems.get(mPositionItem).getName().toString();
                 mTvWord.setText(word);
                 mTextToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
-                Log.d("Test", "onPageSelected: " + position + " " + (mItems.size() - 1));
                 if (position == (mItems.size() - 1)) {
 //                    mProgressBar.setProgress(mPositionItem + 1);
                     mRelativeLayout.setVisibility(View.VISIBLE);
@@ -132,7 +130,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void init() {
-        myAsyncTask = new MyAsyncTask();
         mImgSpeaker = (ImageView) findViewById(R.id.img_speaker);
         mImgReturn = (ImageView) findViewById(R.id.img_return);
         mImgHome = (ImageView) findViewById(R.id.img_home);
@@ -349,27 +346,6 @@ public class VocabularyActivity extends AppCompatActivity implements View.OnClic
     private void changeViewPager(int position) {
         mViewPager.setCurrentItem(position);
         mPagerAdapter.notifyDataSetChanged();
-    }
-
-    class MyAsyncTask extends AsyncTask<Void, String, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            word = mItems.get(mPositionItem).getName().toString();
-            return word;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            readText(s);
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            mTvWord.setText(values[0]);
-        }
     }
 
 }

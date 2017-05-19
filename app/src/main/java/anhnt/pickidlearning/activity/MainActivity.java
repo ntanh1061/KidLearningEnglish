@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Item> items;
     private int mPracticId;
     private String mCategoryName;
-    private DrawerLayout mDrawer;
-    private ActionBarDrawerToggle mToggle;
     private int mPosition;
     private ImageView mImgPlay;
 
@@ -81,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void init() {
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerViewType = (RecyclerView) findViewById(R.id.recyclerView);
         mImgPlay = (ImageView) findViewById(R.id.img_play);
@@ -157,19 +154,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
-        mToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawer.setDrawerListener(mToggle);
-        mToggle.syncState();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     private void getItems(int categoryId) {
