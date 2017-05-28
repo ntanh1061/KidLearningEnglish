@@ -3,7 +3,9 @@ package anhnt.pickidlearning.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +16,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -29,8 +33,11 @@ import anhnt.pickidlearning.R;
 import anhnt.pickidlearning.ReadJson;
 import anhnt.pickidlearning.adapter.RecyclerViewAdapter;
 import anhnt.pickidlearning.adapter.RecyclerViewTypeAdapter;
+import anhnt.pickidlearning.fragment.AnhVietFragment;
 import anhnt.pickidlearning.fragment.FindImageFragment;
 import anhnt.pickidlearning.fragment.ListenChooseFragment;
+import anhnt.pickidlearning.fragment.RecentWordsFragment;
+import anhnt.pickidlearning.fragment.YourWordsFragment;
 import anhnt.pickidlearning.models.Category;
 import anhnt.pickidlearning.models.Item;
 import anhnt.pickidlearning.models.Type;
@@ -40,7 +47,7 @@ import anhnt.pickidlearning.myinterface.ISendItemID;
  * Created by AnhNT on 4/9/2017.
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     private Toolbar mToolbar;
     private int mCategoryId = 1;
     private RecyclerView mRecyclerView;
@@ -56,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String mCategoryName;
     private int mPosition;
     private ImageView mImgPlay;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mToggle;
+    private NavigationView mNavigationView;
+    private LinearLayout mLinearLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +95,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mImgPlay = (ImageView) findViewById(R.id.img_play);
         mImgPlay.setOnClickListener(this);
         types = new ArrayList<>();
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mLinearLayout = (LinearLayout) findViewById(R.id.ln_frame);
     }
 
     public void setupRecyclerView() {
@@ -154,11 +169,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
+        mToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.setDrawerListener(mToggle);
+        mToggle.syncState();
     }
 
-    @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void getItems(int categoryId) {
@@ -195,5 +217,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 actionPracticActivity(5);
                 break;
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_anh_viet:
+                mLinearLayout.setVisibility(View.GONE);
+                AnhVietFragment anhVietFragment = new AnhVietFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fr_container, anhVietFragment)
+                        .commit();
+                break;
+            case R.id.action_your_word:
+                mLinearLayout.setVisibility(View.GONE);
+                YourWordsFragment yourWordsFragment = new YourWordsFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fr_container, yourWordsFragment)
+                        .commit();
+                break;
+            case R.id.action_recent_word:
+                mLinearLayout.setVisibility(View.GONE);
+                RecentWordsFragment recentWordsFragment = new RecentWordsFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fr_container, recentWordsFragment)
+                        .commit();
+                break;
+            case R.id.action_pic_learning:
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
+                finish();
+                break;
+        }
+        mDrawer.closeDrawer(GravityCompat.START);
+        return false;
     }
 }

@@ -6,4 +6,8 @@ package anhnt.pickidlearning.myinterface;
 
 public interface IOnItemClickListener {
     void setOnItemClick(int position);
+    void itemClick(int position);
+    void yourWordClick(int posirion);
+    void speakerItemClick(int position);
+    void itemLongClick(int position);
 }

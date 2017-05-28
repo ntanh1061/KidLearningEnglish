@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Settings" />
+    <item
+        android:id="@+id/action_pic_learning"
+        android:title="Pic Learning" />
+    <item
+        android:id="@+id/action_dictionanry"
+        android:title="Dictionary">
+        <menu>
+            <item
+                android:id="@+id/action_anh_viet"
+                android:title="Anh - Viet" />
+            <item
+                android:id="@+id/action_your_word"
+                android:title="Your Word" />
+            <item
+                android:id="@+id/action_recent_word"
+                android:title="Recent Word" />
+        </menu>
+    </item>
 </menu>
